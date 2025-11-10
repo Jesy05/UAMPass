@@ -9,16 +9,22 @@
         <p class="text-muted mb-5">Selecciona tu portal para continuar</p>
 
         <div class="d-grid gap-3">
-            <a href="/Estudiantes" class="btn btn-lg text-white" style="background-color: #04a7ad; border-radius: 10px;">
-                 Portal Estudiantes
+            <a asp-controller="Estudiantes" asp-action="Index"
+               class="btn btn-lg text-white"
+               style="background-color: #04a7ad; border-radius: 10px;">
+                Portal Estudiantes
             </a>
 
-            <a href="/Empresas" class="btn btn-lg btn-outline-info" style="border-color: #04a7ad; color: #04a7ad; border-radius: 10px;">
-                 Portal Empresas
+            <a asp-controller="Empresas" asp-action="Index"
+               class="btn btn-lg btn-outline-info"
+               style="border-color: #04a7ad; color: #04a7ad; border-radius: 10px;">
+                Portal Empresas
             </a>
 
-            <a href="/Administracion" class="btn btn-lg text-white" style="background-color: #027d81; border-radius: 10px;">
-                 Portal Administración
+            <a asp-controller="Administracion" asp-action="Index"
+               class="btn btn-lg text-white"
+               style="background-color: #027d81; border-radius: 10px;">
+                Portal Administración
             </a>
         </div>
     </div>
