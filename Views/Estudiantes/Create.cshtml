@@ -1,0 +1,33 @@
+﻿@model UAMPass.Models.Estudiante
+@{
+    ViewData["Title"] = "Nuevo Estudiante";
+}
+<h2>Nuevo Estudiante</h2>
+
+<form asp-action="Create" method="post">
+    <div class="mb-3">
+        <label asp-for="Nombre" class="form-label"></label>
+        <input asp-for="Nombre" class="form-control" />
+        <span asp-validation-for="Nombre" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Correo" class="form-label"></label>
+        <input asp-for="Correo" class="form-control" />
+        <span asp-validation-for="Correo" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Facultad" class="form-label"></label>
+        <input asp-for="Facultad" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Carreras (separadas por coma)</label>
+        <input name="CareersCsv" class="form-control" />
+    </div>
+
+    <button class="btn btn-success">Guardar</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

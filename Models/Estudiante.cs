@@ -13,16 +13,15 @@ namespace UAMPass.Models
         [Required, StringLength(120)]
         public string Nombre { get; set; } = string.Empty;
 
-        [Required, EmailAddress]
+        [Required, EmailAddress, StringLength(150)]
         public string Correo { get; set; } = string.Empty;
 
         [StringLength(100)]
         public string Facultad { get; set; } = string.Empty;
 
-        // Para simplificar el mapeo inicial guardamos carreras como CSV en la BD
+        // Simplificación inicial: carreras como CSV
         public string? CareersCsv { get; set; }
 
-        // Propiedad de ayuda no mapeada para consumir en código como lista
         [NotMapped]
         public List<string> Carreras
         {
@@ -32,10 +31,10 @@ namespace UAMPass.Models
             set => CareersCsv = (value == null) ? null : string.Join(",", value);
         }
 
-        // Relación: un estudiante puede tener muchas aplicaciones
-        public ICollection<Aplicacion> Aplicaciones { get; set; } = new List<Aplicacion>();
-
-        // Fecha de registro opcional
+        // Fecha de creación / registro
         public DateTime FechaRegistro { get; set; } = DateTime.UtcNow;
+
+        // Relación: un estudiante puede tener muchas aplicaciones (navegación)
+        public ICollection<Aplicacion> Aplicaciones { get; set; } = new List<Aplicacion>();
     }
 }

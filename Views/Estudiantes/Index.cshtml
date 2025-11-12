@@ -1,18 +1,25 @@
-﻿@{
-    ViewData["Title"] = "Portal Estudiantes - UAMPass";
+﻿@model IEnumerable<UAMPass.Models.Estudiante>
+@{
+    ViewData["Title"] = "Portal Estudiantes";
 }
-
-<div class="container py-5">
-    <h2 class="fw-bold mb-4" style="color:#04a7ad;">🎓 Portal Estudiantes</h2>
-    <p class="text-muted mb-5">Aquí podrás consultar tus pasantías, aplicar a ofertas y dar seguimiento a tu progreso.</p>
-
-    <div class="card shadow-sm p-4 border-0" style="border-radius: 15px;">
-        <h5 class="fw-semibold mb-3">Tu panel</h5>
-        <ul class="list-group list-group-flush">
-            <li class="list-group-item">🔍 Ver pasantías disponibles</li>
-            <li class="list-group-item">📝 Aplicar a una pasantía</li>
-            <li class="list-group-item">📈 Ver tu progreso</li>
-            <li class="list-group-item">📄 Subir tu CV</li>
-        </ul>
-    </div>
-</div>
+<h2>Estudiantes</h2>
+<p><a asp-action="Create" class="btn btn-primary">Nuevo estudiante</a></p>
+<table class="table">
+    <thead><tr><th>Id</th><th>Nombre</th><th>Correo</th><th>Facultad</th><th></th></tr></thead>
+    <tbody>
+        @foreach (var e in Model)
+        {
+            <tr>
+                <td>@e.Id</td>
+                <td>@e.Nombre</td>
+                <td>@e.Correo</td>
+                <td>@e.Facultad</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@e.Id">Ver</a> |
+                    <a asp-action="Edit" asp-route-id="@e.Id">Editar</a> |
+                    <a asp-action="Delete" asp-route-id="@e.Id">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
