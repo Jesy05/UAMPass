@@ -1,0 +1,43 @@
+﻿@model UAMPass.Models.Estudiante
+@{
+    ViewData["Title"] = "Mi Perfil";
+}
+
+<div class="container mt-5" style="max-width: 700px;">
+    <h2 class="mb-4 text-center">Mi Perfil</h2>
+
+    <form asp-action="Profile" method="post" enctype="multipart/form-data">
+        <input type="hidden" asp-for="Id" />
+
+        <div class="form-group mb-3">
+            <label asp-for="Nombre"></label>
+            <input asp-for="Nombre" class="form-control" />
+        </div>
+
+        <div class="form-group mb-3">
+            <label asp-for="Correo"></label>
+            <input asp-for="Correo" class="form-control" readonly />
+        </div>
+
+        <div class="form-group mb-3">
+            <label asp-for="Facultad"></label>
+            <input asp-for="Facultad" class="form-control" />
+        </div>
+
+        <div class="form-group mb-3">
+            <label>Carreras (separadas por coma)</label>
+            <input name="CareersCsv" value="@Model.CareersCsv" class="form-control" />
+        </div>
+
+        <div class="form-group mb-4">
+            <label>Subir CV (PDF)</label>
+            <input type="file" name="cvFile" class="form-control" accept=".pdf" />
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Guardar Cambios</button>
+    </form>
+
+    <div class="text-center mt-4">
+        <a asp-action="Logout" class="btn btn-outline-danger">Cerrar Sesión</a>
+    </div>
+</div>

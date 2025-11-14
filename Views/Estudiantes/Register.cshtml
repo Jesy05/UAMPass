@@ -1,0 +1,43 @@
+﻿@model UAMPass.Models.Estudiante
+@{
+    ViewData["Title"] = "Registro de Estudiante";
+}
+
+<div class="container mt-5" style="max-width: 600px;">
+    <h2 class="mb-4 text-center">Registro de Estudiante</h2>
+
+    <form asp-action="Register" method="post">
+        <div class="form-group mb-3">
+            <label asp-for="Nombre"></label>
+            <input asp-for="Nombre" class="form-control" />
+            <span asp-validation-for="Nombre" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-3">
+            <label asp-for="Correo"></label>
+            <input asp-for="Correo" class="form-control" />
+            <span asp-validation-for="Correo" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-3">
+            <label asp-for="Facultad"></label>
+            <input asp-for="Facultad" class="form-control" />
+        </div>
+
+        <div class="form-group mb-3">
+            <label>Carreras (separadas por coma)</label>
+            <input name="CareersCsv" class="form-control" />
+        </div>
+
+        <div class="form-group mb-4">
+            <label>Contraseña</label>
+            <input type="password" name="Password" class="form-control" required />
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Registrarse</button>
+    </form>
+
+    <div class="text-center mt-3">
+        <a asp-action="Login">¿Ya tienes una cuenta? Inicia sesión</a>
+    </div>
+</div>
