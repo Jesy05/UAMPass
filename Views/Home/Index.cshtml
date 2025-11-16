@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "UAMPass - Portal de Pasantías";
+    ViewData["Title"] = "UAMPass - Portal de Pasantías para estudiantes";
 }
 
 <!-- Landing Page Principal -->
@@ -8,21 +8,21 @@
         <h1 class="fw-bold mb-4" style="color: #04a7ad;">Bienvenido a UAMPass</h1>
         <p class="text-muted mb-5">Selecciona tu portal para continuar</p>
 
-        <div class="d-grid gap-3">
+        <div class="NavBar">
             <a asp-controller="Estudiantes" asp-action="Index"
-               class="btn btn-lg text-white"
+               class="btn_estudiantes"
                style="background-color: #04a7ad; border-radius: 10px;">
                 Portal Estudiantes
             </a>
 
-            <a asp-controller="Empresas" asp-action="Index"
-               class="btn btn-lg btn-outline-info"
+            <a asp-controller="Empresas" asp-action="Index" 
+               class="btn_Empresas"
                style="border-color: #04a7ad; color: #04a7ad; border-radius: 10px;">
                 Portal Empresas
             </a>
 
             <a asp-controller="Administracion" asp-action="Index"
-               class="btn btn-lg text-white"
+               class="btn_Administracion"
                style="background-color: #027d81; border-radius: 10px;">
                 Portal Administración
             </a>
