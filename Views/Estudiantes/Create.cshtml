@@ -1,54 +1,52 @@
-﻿@*@*
-    Archivo: Views/Estudiantes/Create.cshtml
-    Propósito:
-      - Formulario MVC para crear un nuevo Estudiante.
-    Funcionalidad:
-      - Usa tag-helpers de ASP.NET Core (asp-for, asp-action) para enlazar con el modelo y el controlador.
-      - Valida en cliente con los scripts parciales de validación si están incluidos.
-    Conexiones con otros archivos:
-      - Modelo: Models/Estudiante.cs  (propiedades: Nombre, Correo, CareersCsv, etc.)
-      - Controlador: Controllers/EstudiantesController.cs (acciones Create GET y POST)
-      - Partial: Views/Shared/_ValidationScriptsPartial.cshtml (scripts de validación)
-      - Layout: Views/Shared/_Layout.cshtml (estilos y scripts globales)
-    Notas:
-      - La entrada CareersCsv se almacena como CSV y se normaliza en el controlador.
-*@
+﻿@model UAMPass.Models.Estudiante
 
-@model UAMPass.Models.Estudiante
 @{
-    // Título mostrado y usado por el layout
     ViewData["Title"] = "Nuevo Estudiante";
 }
+
 <h2>Nuevo Estudiante</h2>
 
-<!-- Formulario que envía al controlador EstudiantesController -> Create (POST) -->
 <form asp-action="Create" method="post">
     <div class="mb-3">
-        <!-- Campo Nombre: vinculado al modelo Estudiante.Nombre -->
         <label asp-for="Nombre" class="form-label"></label>
         <input asp-for="Nombre" class="form-control" />
-        <!-- Mensaje de error de validación para Nombre -->
         <span asp-validation-for="Nombre" class="text-danger"></span>
     </div>
+
     <div class="mb-3">
-        <!-- Campo Correo: vinculado al modelo Estudiante.Correo -->
         <label asp-for="Correo" class="form-label"></label>
         <input asp-for="Correo" class="form-control" />
         <span asp-validation-for="Correo" class="text-danger"></span>
     </div>
+
     <div class="mb-3">
-        <!-- Campo CareersCsv: se recibe como CSV; el controlador lo procesa a lista -->
+        <label asp-for="Facultad" class="form-label"></label>
+        <input asp-for="Facultad" class="form-control" />
+        <span asp-validation-for="Facultad" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
         <label asp-for="CareersCsv" class="form-label">Carreras (separadas por coma)</label>
         <input asp-for="CareersCsv" class="form-control" />
         <span asp-validation-for="CareersCsv" class="text-danger"></span>
     </div>
 
-    <!-- Botones: Guardar envía el formulario; Cancelar redirige a Index -->
+    <div class="mb-3">
+        <label asp-for="CIF" class="form-label"></label>
+        <input asp-for="CIF" class="form-control" />
+        <span asp-validation-for="CIF" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ContrasenaPlano" class="form-label">Contraseña</label>
+        <input asp-for="ContrasenaPlano" class="form-control" />
+        <span asp-validation-for="ContrasenaPlano" class="text-danger"></span>
+    </div>
+
     <button class="btn btn-success">Guardar</button>
     <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
 </form>
 
 @section Scripts {
-    <!-- Incluye los scripts de validación generados por ASP.NET (jQuery Validate si está presente) -->
     <partial name="_ValidationScriptsPartial" />
 }

@@ -12,14 +12,15 @@ using UAMPass.Models;
 namespace UAMPass.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251112163114_Estudiante_CRUD_Initial")]
-    partial class Estudiante_CRUD_Initial
+    [Migration("20251117193623_AddEstudianteTable")]
+    partial class AddEstudianteTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .HasDefaultSchema("uampass")
                 .HasAnnotation("ProductVersion", "9.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
@@ -45,8 +46,9 @@ namespace UAMPass.Migrations
                     b.Property<int>("PasantiaId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("integer");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -54,7 +56,7 @@ namespace UAMPass.Migrations
 
                     b.HasIndex("PasantiaId");
 
-                    b.ToTable("Aplicaciones");
+                    b.ToTable("Aplicaciones", "uampass");
                 });
 
             modelBuilder.Entity("UAMPass.Models.Empresa", b =>
@@ -84,7 +86,7 @@ namespace UAMPass.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Empresas");
+                    b.ToTable("Empresas", "uampass");
                 });
 
             modelBuilder.Entity("UAMPass.Models.Estudiante", b =>
@@ -95,8 +97,17 @@ namespace UAMPass.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("CIF")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
                     b.Property<string>("CareersCsv")
-                        .HasColumnType("text");
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<string>("ContrasenaHash")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)");
 
                     b.Property<string>("Correo")
                         .IsRequired()
@@ -118,7 +129,7 @@ namespace UAMPass.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Estudiantes");
+                    b.ToTable("Estudiantes", "uampass");
                 });
 
             modelBuilder.Entity("UAMPass.Models.Pasantia", b =>
@@ -154,7 +165,7 @@ namespace UAMPass.Migrations
 
                     b.HasIndex("EmpresaId");
 
-                    b.ToTable("Pasantias");
+                    b.ToTable("Pasantias", "uampass");
                 });
 
             modelBuilder.Entity("UAMPass.Models.Usuario", b =>
@@ -186,7 +197,7 @@ namespace UAMPass.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Usuarios");
+                    b.ToTable("Usuarios", "uampass");
                 });
 
             modelBuilder.Entity("UAMPass.Models.Aplicacion", b =>

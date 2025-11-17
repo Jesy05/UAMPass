@@ -15,8 +15,16 @@ namespace UAMPass.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // Todas las tablas en el esquema uampass
+            modelBuilder.HasDefaultSchema("uampass");
+
+            // Enum ApplicationStatus guardado como texto
+            modelBuilder
+                .Entity<Aplicacion>()
+                .Property(a => a.Status)
+                .HasConversion<string>();
+
             base.OnModelCreating(modelBuilder);
-            // configuraciones adicionales (índices, seed)...
         }
     }
 }

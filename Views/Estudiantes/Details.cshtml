@@ -1,0 +1,35 @@
+﻿<h2>Estudiantes</h2>
+
+<p>
+    <a asp-action="Create">Crear nuevo</a>
+</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Correo</th>
+            <th>Facultad</th>
+            <th>CIF</th>
+            <th>Carreras</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Nombre</td>
+                <td>@item.Correo</td>
+                <td>@item.Facultad</td>
+                <td>@item.CIF</td>
+                <td>@string.Join(", ", item.Carreras ?? new List<string>())</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id">Ver</a> |
+                    <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

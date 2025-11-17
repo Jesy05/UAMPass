@@ -1,0 +1,41 @@
+﻿@model UAMPass.Models.Estudiante
+
+<h2>Editar Estudiante</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
+
+    <div>
+        <label>Nombre</label>
+        <input asp-for="Nombre" />
+    </div>
+
+    <div>
+        <label>Correo</label>
+        <input asp-for="Correo" />
+    </div>
+
+    <div>
+        <label>Facultad</label>
+        <input asp-for="Facultad" />
+    </div>
+
+    <div>
+        <label>CIF</label>
+        <input asp-for="CIF" />
+    </div>
+
+    <div>
+        <label>Carreras (separadas por coma)</label>
+        <input name="Carreras" value="@string.Join(", ", Model.Carreras ?? new List<string>())" />
+    </div>
+
+    <div>
+        <label>Nueva contraseña (opcional)</label>
+        <input asp-for="ContrasenaHash" type="password" />
+    </div>
+
+    <button type="submit">Guardar</button>
+</form>
+
+<a asp-action="Index">Volver</a>

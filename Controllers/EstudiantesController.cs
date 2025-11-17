@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using UAMPass.Models;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace UAMPass.Controllers
 {
@@ -42,7 +44,7 @@ namespace UAMPass.Controllers
         {
             if (!ModelState.IsValid) return View(estudiante);
 
-            // Normalizar: quitar duplicados/trimming en carreras
+            // Normalizar carreras
             if (estudiante.Carreras != null)
             {
                 estudiante.Carreras = estudiante.Carreras
@@ -50,6 +52,12 @@ namespace UAMPass.Controllers
                     .Where(c => !string.IsNullOrWhiteSpace(c))
                     .Distinct()
                     .ToList();
+            }
+
+            // CORREGIDO: Hash de contraseña usando ContrasenaPlano
+            if (!string.IsNullOrWhiteSpace(estudiante.ContrasenaPlano))
+            {
+                estudiante.ContrasenaHash = HashPassword(estudiante.ContrasenaPlano);
             }
 
             _db.Add(estudiante);
@@ -72,30 +80,34 @@ namespace UAMPass.Controllers
         public async Task<IActionResult> Edit(int id, Estudiante estudiante)
         {
             if (id != estudiante.Id) return BadRequest();
-
             if (!ModelState.IsValid) return View(estudiante);
 
-            try
-            {
-                // Normalizar carreras antes de guardar
-                if (estudiante.Carreras != null)
-                {
-                    estudiante.Carreras = estudiante.Carreras
-                        .Select(c => c.Trim())
-                        .Where(c => !string.IsNullOrWhiteSpace(c))
-                        .Distinct()
-                        .ToList();
-                }
+            var original = await _db.Estudiantes.FindAsync(id);
+            if (original == null) return NotFound();
 
-                _db.Update(estudiante);
-                await _db.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
+            // Mantener campos existentes
+            original.Nombre = estudiante.Nombre;
+            original.Correo = estudiante.Correo;
+            original.Facultad = estudiante.Facultad;
+            original.CIF = estudiante.CIF;
+
+            // Normalizar carreras
+            if (estudiante.Carreras != null)
             {
-                if (!await _db.Estudiantes.AnyAsync(e => e.Id == id))
-                    return NotFound();
-                throw;
+                original.Carreras = estudiante.Carreras
+                    .Select(c => c.Trim())
+                    .Where(c => !string.IsNullOrWhiteSpace(c))
+                    .Distinct()
+                    .ToList();
             }
+
+            // CORREGIDO: Hash solo si viene una nueva ContrasenaPlano
+            if (!string.IsNullOrWhiteSpace(estudiante.ContrasenaPlano))
+            {
+                original.ContrasenaHash = HashPassword(estudiante.ContrasenaPlano);
+            }
+
+            await _db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
@@ -123,10 +135,9 @@ namespace UAMPass.Controllers
         }
 
         // -------------------------
-        // JSON/API endpoints (útiles para pruebas/frontend)
+        // JSON/API endpoints
         // -------------------------
 
-        // GET: /api/estudiantes
         [HttpGet("/api/estudiantes")]
         public async Task<IActionResult> GetAllJson()
         {
@@ -143,7 +154,6 @@ namespace UAMPass.Controllers
             return Json(list);
         }
 
-        // GET: /api/estudiantes/5
         [HttpGet("/api/estudiantes/{id:int}")]
         public async Task<IActionResult> GetJson(int id)
         {
@@ -161,7 +171,6 @@ namespace UAMPass.Controllers
             return Json(e);
         }
 
-        // POST: /api/estudiantes (JSON body)
         [HttpPost("/api/estudiantes")]
         public async Task<IActionResult> CreateJson([FromBody] Estudiante estudiante)
         {
@@ -169,6 +178,14 @@ namespace UAMPass.Controllers
             _db.Estudiantes.Add(estudiante);
             await _db.SaveChangesAsync();
             return CreatedAtAction(nameof(GetJson), new { id = estudiante.Id }, estudiante);
+        }
+
+        // MÉTODO EXTRA: Hash de contraseñas
+        private string HashPassword(string password)
+        {
+            using var sha256 = SHA256.Create();
+            var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+            return Convert.ToBase64String(bytes);
         }
     }
 }
