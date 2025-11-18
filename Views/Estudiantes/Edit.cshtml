@@ -1,41 +1,43 @@
 ﻿@model UAMPass.Models.Estudiante
 
-<h2>Editar Estudiante</h2>
+<h2 style="margin-bottom: 20px;">Editar Estudiante</h2>
 
-<form asp-action="Edit" method="post">
+<form asp-action="Edit" method="post" style="max-width: 400px;">
     <input type="hidden" asp-for="Id" />
 
-    <div>
-        <label>Nombre</label>
-        <input asp-for="Nombre" />
+    <div style="margin-bottom: 10px;">
+        <label>Nombre</label><br />
+        <input asp-for="Nombre" style="width: 100%;" />
     </div>
 
-    <div>
-        <label>Correo</label>
-        <input asp-for="Correo" />
+    <div style="margin-bottom: 10px;">
+        <label>Correo</label><br />
+        <input asp-for="Correo" style="width: 100%;" />
     </div>
 
-    <div>
-        <label>Facultad</label>
-        <input asp-for="Facultad" />
+    <div style="margin-bottom: 10px;">
+        <label>Facultad</label><br />
+        <input asp-for="Facultad" style="width: 100%;" />
     </div>
 
-    <div>
-        <label>CIF</label>
-        <input asp-for="CIF" />
+    <div style="margin-bottom: 10px;">
+        <label>CIF</label><br />
+        <input asp-for="CIF" style="width: 100%;" />
     </div>
 
-    <div>
-        <label>Carreras (separadas por coma)</label>
-        <input name="Carreras" value="@string.Join(", ", Model.Carreras ?? new List<string>())" />
+    <div style="margin-bottom: 10px;">
+        <label>Carreras (separadas por coma)</label><br />
+        <input name="Carreras" value="@string.Join(", ", Model.Carreras ?? new List<string>())" style="width: 100%;" />
     </div>
 
-    <div>
-        <label>Nueva contraseña (opcional)</label>
-        <input asp-for="ContrasenaHash" type="password" />
+    <div style="margin-bottom: 10px;">
+        <label>Nueva contraseña (opcional)</label><br />
+        <input asp-for="ContrasenaHash" type="password" style="width: 100%;" />
     </div>
 
     <button type="submit">Guardar</button>
 </form>
 
-<a asp-action="Index">Volver</a>
+<p style="margin-top: 20px;">
+    <a asp-action="Index">Volver</a>
+</p>
