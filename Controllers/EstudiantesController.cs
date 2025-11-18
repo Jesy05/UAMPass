@@ -13,6 +13,8 @@ namespace UAMPass.Controllers
         private readonly ApplicationDbContext _db;
         public EstudiantesController(ApplicationDbContext db) => _db = db;
 
+        private const string VIEW_PATH = "~/Views/Administracion/Estudiantes/";
+
         // MVC: Lista paginada simple
         public async Task<IActionResult> Index()
         {
@@ -20,7 +22,8 @@ namespace UAMPass.Controllers
                 .AsNoTracking()
                 .OrderByDescending(e => e.FechaRegistro)
                 .ToListAsync();
-            return View(estudiantes);
+
+            return View(VIEW_PATH + "Index.cshtml", estudiantes);
         }
 
         // MVC: Details
@@ -30,19 +33,23 @@ namespace UAMPass.Controllers
             var estudiante = await _db.Estudiantes
                 .AsNoTracking()
                 .FirstOrDefaultAsync(e => e.Id == id.Value);
+
             if (estudiante == null) return NotFound();
-            return View(estudiante);
+
+            return View(VIEW_PATH + "Details.cshtml", estudiante);
         }
 
         // MVC: GET Create
-        public IActionResult Create() => View();
+        public IActionResult Create() =>
+            View(VIEW_PATH + "Create.cshtml");
 
         // MVC: POST Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Estudiante estudiante)
         {
-            if (!ModelState.IsValid) return View(estudiante);
+            if (!ModelState.IsValid)
+                return View(VIEW_PATH + "Create.cshtml", estudiante);
 
             // Normalizar carreras
             if (estudiante.Carreras != null)
@@ -54,7 +61,7 @@ namespace UAMPass.Controllers
                     .ToList();
             }
 
-            // CORREGIDO: Hash de contraseña usando ContrasenaPlano
+            // Hash contraseña
             if (!string.IsNullOrWhiteSpace(estudiante.ContrasenaPlano))
             {
                 estudiante.ContrasenaHash = HashPassword(estudiante.ContrasenaPlano);
@@ -69,9 +76,11 @@ namespace UAMPass.Controllers
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
+
             var estudiante = await _db.Estudiantes.FindAsync(id.Value);
             if (estudiante == null) return NotFound();
-            return View(estudiante);
+
+            return View(VIEW_PATH + "Edit.cshtml", estudiante);
         }
 
         // MVC: POST Edit
@@ -80,18 +89,17 @@ namespace UAMPass.Controllers
         public async Task<IActionResult> Edit(int id, Estudiante estudiante)
         {
             if (id != estudiante.Id) return BadRequest();
-            if (!ModelState.IsValid) return View(estudiante);
+            if (!ModelState.IsValid)
+                return View(VIEW_PATH + "Edit.cshtml", estudiante);
 
             var original = await _db.Estudiantes.FindAsync(id);
             if (original == null) return NotFound();
 
-            // Mantener campos existentes
             original.Nombre = estudiante.Nombre;
             original.Correo = estudiante.Correo;
             original.Facultad = estudiante.Facultad;
             original.CIF = estudiante.CIF;
 
-            // Normalizar carreras
             if (estudiante.Carreras != null)
             {
                 original.Carreras = estudiante.Carreras
@@ -101,7 +109,6 @@ namespace UAMPass.Controllers
                     .ToList();
             }
 
-            // CORREGIDO: Hash solo si viene una nueva ContrasenaPlano
             if (!string.IsNullOrWhiteSpace(estudiante.ContrasenaPlano))
             {
                 original.ContrasenaHash = HashPassword(estudiante.ContrasenaPlano);
@@ -115,9 +122,11 @@ namespace UAMPass.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
+
             var estudiante = await _db.Estudiantes.FirstOrDefaultAsync(e => e.Id == id.Value);
             if (estudiante == null) return NotFound();
-            return View(estudiante);
+
+            return View(VIEW_PATH + "Delete.cshtml", estudiante);
         }
 
         // MVC: POST Delete
@@ -134,10 +143,7 @@ namespace UAMPass.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // -------------------------
-        // JSON/API endpoints
-        // -------------------------
-
+        // JSON API endpoints
         [HttpGet("/api/estudiantes")]
         public async Task<IActionResult> GetAllJson()
         {
@@ -180,7 +186,6 @@ namespace UAMPass.Controllers
             return CreatedAtAction(nameof(GetJson), new { id = estudiante.Id }, estudiante);
         }
 
-        // MÉTODO EXTRA: Hash de contraseñas
         private string HashPassword(string password)
         {
             using var sha256 = SHA256.Create();

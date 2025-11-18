@@ -1,28 +1,22 @@
-﻿@*
-    Archivo: Views/Administracion/Index.cshtml
-    Propósito:
-      - Vista Razor que muestra el "Portal de Administración" de la aplicación UAMPass.
-      - Interfaz estática sencilla para que administradores accedan al panel de administración.
-    Funcionalidad:
-      - Renderiza un título y una descripción introductoria.
-      - No contiene lógica de servidor en este archivo; depende del controlador que renderiza la vista.
-    Conexiones con otros archivos:
-      - Controlador probable: Controllers/AdministracionController.cs (accion Index) — invoca esta vista.
-      - Layout compartido: _Layout.cshtml (Views/Shared) — hereda estilos y scripts comunes.
-      - Recursos frontend: CSS/JS globales referenciados por el layout (por ejemplo bootstrap).
-    Notas:
-      - Mantener esta vista ligera; lógica server-side debe residir en el controlador o en ViewModels.
-*@
-
-@{
-    // Establece el título de la página que usa el layout para <title> HTML.
+﻿@{
     ViewData["Title"] = "Portal Administración";
 }
 
 <div class="container py-5 text-center">
-    <!-- Título principal del portal -->
+
     <h2 class="fw-bold text-success mb-4">Portal de Administración</h2>
 
-    <!-- Texto descriptivo; estático y orientativo para el administrador -->
-    <p class="text-muted">Bienvenido al portal de administración. Desde aquí puedes supervisar la gestión de usuarios, empresas y pasantías.</p>
+    <p class="text-muted mb-4">
+        Bienvenido al portal de administración. Desde aquí puedes supervisar la gestión
+        de estudiantes registrados en UAMPass.
+    </p>
+
+    <div class="mt-4">
+        <a asp-controller="Administracion"
+           asp-action="Estudiantes"
+           class="btn btn-success px-4 py-2">
+            📋 Ver Base de Datos de Estudiantes
+        </a>
+    </div>
+
 </div>
