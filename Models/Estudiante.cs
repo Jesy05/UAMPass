@@ -58,7 +58,33 @@ namespace UAMPass.Models
 
         public DateTime FechaRegistro { get; set; } = DateTime.UtcNow;
 
+        // Fecha de último ingreso
+        public DateTime? UltimoLogin { get; set; }
+
+        // Para recuperar contraseña sin enviar email (modo prueba)
+        [StringLength(10)]
+        public string? CodigoRecuperacion { get; set; }
+
+        // ---------------------------
+        // PERFIL DEL ESTUDIANTE
+        // ---------------------------
+
+        // CV PDF (ruta en el sistema)
+        [StringLength(300)]
+        public string? CvPdfPath { get; set; }
+
+        // Foto de perfil opcional
+        [StringLength(300)]
+        public string? FotoPerfilPath { get; set; }
+
+        // Estado de la cuenta (por si en el futuro se bloquea una cuenta)
+        [StringLength(20)]
+        public string Estado { get; set; } = "Activo";
+
         // Relación con aplicaciones
         public ICollection<Aplicacion> Aplicaciones { get; set; } = new List<Aplicacion>();
+
+        // Notificaciones del estudiante
+        public ICollection<Notificacion> Notificaciones { get; set; } = new List<Notificacion>();
     }
 }
