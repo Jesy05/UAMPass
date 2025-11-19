@@ -12,6 +12,10 @@ namespace UAMPass.Controllers
         {
             _context = context;
         }
+        /*============================
+         inicio de sesion administrador
+        ================================*/
+
 
         // =============================
         // INDEX PRINCIPAL DEL PORTAL
