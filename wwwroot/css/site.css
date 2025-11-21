@@ -1,3 +1,20 @@
+:root {
+    --azul-oscuro: #003366;
+    --azul-medio: #004080;
+    --azul-primario: #0055A5;
+    --azul-claro: #0A73C9;
+    --azul-suave: #E6F0FF;
+    --gris-oscuro: #333333;
+    --gris-medio: #666666;
+    --gris-suave: #D9D9D9;
+    --gris-fondo: #F2F2F2;
+    --exito: #28A745;
+    --alerta: #FFC107;
+    --peligro: #DC3545;
+    --info: #17A2B8;
+}
+
+
 html {
   font-size: 14px;
 }

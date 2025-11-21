@@ -183,7 +183,10 @@ namespace UAMPass.Controllers
             if (!ModelState.IsValid) return BadRequest(ModelState);
             _db.Estudiantes.Add(estudiante);
             await _db.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetJson), new { id = estudiante.Id }, estudiante);
+            // después de await _db.SaveChangesAsync();
+            HttpContext.Session.SetString("EstudianteId", estudiante.Id.ToString());
+            return RedirectToAction("Profile", "PortalEstudiante");
+
         }
 
         private string HashPassword(string password)
