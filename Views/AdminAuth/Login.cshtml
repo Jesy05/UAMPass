@@ -48,35 +48,3 @@
     <partial name="_ValidationScriptsPartial" />
 }
 
-@{
-    ViewData["Title"] = "Nuevo Administrador";
-}
-<div class="container mt-5" style="max-width: 600px;">
-    <h2 class="text-center mb-4">Nuevo Administrador</h2>
-    
-    <form method="post">
-        <div class="mb-3">
-            <label class="form-label">Nombre</label>
-            <input type="text" name="nombre" class="form-control" required />
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">Correo</label>
-            <input type="email" name="correo" class="form-control" required />
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">Usuario</label>
-            <input type="text" name="usuario" class="form-control" required />
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">Contraseña</label>
-            <input type="password" name="contrasena" class="form-control" required />
-        </div>
-
-        <button type="submit" class="btn btn-success" style="background-color: #198754;">
-            Guardar
-        </button>
-    </form>
-</div>
