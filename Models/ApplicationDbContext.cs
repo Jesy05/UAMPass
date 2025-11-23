@@ -12,7 +12,7 @@ namespace UAMPass.Models
         public DbSet<Empresa> Empresas { get; set; }
         public DbSet<Pasantia> Pasantias { get; set; }
         public DbSet<Aplicacion> Aplicaciones { get; set; }
-
+        public DbSet<Administrador> Administradores { get; set; }
         // NUEVO: tabla de notificaciones
         public DbSet<Notificacion> Notificaciones { get; set; }
 
