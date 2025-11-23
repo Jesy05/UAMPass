@@ -1,0 +1,129 @@
+﻿@using UAMPass.Models.Dto
+@model PasantiaDto.createPasantia
+@{
+    ViewData["Title"] = "Gestión de Pasantías";
+}
+
+<div class="d-flex justify-content-between mb-3">
+    <h2>Listado de Pasantías</h2>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#crearModal">
+        <i class="bi bi-plus-circle"></i> Crear
+    </button>
+</div>
+
+<!-- DataTable -->
+<table id="tablaPasantias" class="table table-striped table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Carreras Permitidas</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Se llenará automáticamente vía AJAX -->
+    </tbody>
+</table>
+
+<!-- Modal Crear -->
+<div class="modal fade" id="crearModal" tabindex="-1" aria-labelledby="crearModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="crearModalLabel">Crear Nueva Pasantía</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formCrear">
+                    <div class="mb-3">
+                        <label for="Nombre" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="Nombre" name="Nombre" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="Descripcion" class="form-label">Descripción</label>
+                        <textarea class="form-control" id="Descripcion" name="Descripcion" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="Carreras" class="form-label">Carreras Permitidas</label>
+                        <select class="form-select" id="Carreras" name="Carreras" multiple required>
+                            <option value="Ingeniería">Ingeniería</option>
+                            <option value="Medicina">Medicina</option>
+                            <option value="Derecho">Derecho</option>
+                            <option value="Sistemas">Sistemas</option>
+                            <option value="Telecomunicaciones">Telecomunicaciones</option>
+                            <option value="Arquitectura">Arquitectura</option>
+                        </select>
+                        <small class="text-muted">Puedes seleccionar varias carreras.</small>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" form="formCrear" class="btn btn-success">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // Inicializar DataTable con AJAX
+            $('#tablaPasantias').DataTable({
+                ajax: {
+                    url: '/api/pasantias', // Endpoint del controlador
+                    dataSrc: ''            // El JSON es un array directo
+                },
+                columns: [
+                    { data: 'titulo' },
+                    { data: 'descripcion' },
+                    { data: 'carrerasPermitidas' },
+                    {
+                        data: null,
+                        render: function (data, type, row) {
+                            return `
+                                <button class="btn btn-sm btn-warning">Editar</button>
+                                <button class="btn btn-sm btn-danger">Eliminar</button>
+                            `;
+                        }
+                    }
+                ],
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
+                }
+            });
+
+            // Evento submit del modal
+            $('#formCrear').on('submit', function (e) {
+                e.preventDefault();
+
+                const createPasantia = {
+                    titulo: $('#Nombre').val(),
+                    descripcion: $('#Descripcion').val(),
+                    RequiredCareersCsv: $('#Carreras').val(),
+                    empresa : 1
+                };
+
+                $.ajax({
+                    url: '/api/pasantias',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(createPasantia),
+                    success: function () {
+                        $('#crearModal').modal('hide');
+                        $('#formCrear')[0].reset();
+                        $('#tablaPasantias').DataTable().ajax.reload(); // refrescar tabla
+                    },
+                    error: function () {
+                        alert('Error al guardar la pasantía');
+                    }
+                });
+            });
+        });
+    </script>
+}

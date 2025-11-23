@@ -1,32 +1,32 @@
 ﻿@{
-    ViewData["Title"] = "UAMPass - Portal de Pasantías";
+    ViewData["Title"] = "UAMPass - Portal de Empresas";
 }
 
 <div class="d-flex flex-column align-items-center justify-content-center min-vh-100 text-center" style="background-color: #f9f9f9;">
 
     <div class="card shadow p-4 border-0" style="max-width: 900px; border-radius: 25px;">
 
-        <h1 class="fw-bold mb-2" style="color: #04a7ad;">Bienvenido a UAMPass</h1>
-        <p class="text-muted mb-4">Selecciona tu portal para continuar</p>
+        <h1 class="fw-bold mb-2" style="color: #04a7ad;">Bienvenido a UAMPass para Empresas</h1>
+        <p class="text-muted mb-4">Selecciona la acción que deseas realizar</p>
 
-        <div class="row justify-content-center g-4">
+        <div class="row justify-content-center g-8">
 
-            <!-- Portal Estudiantes -->
+            <!-- Pasantías -->
             <div class="col-md-4">
                 <div class="card shadow border-0" style="border-radius: 20px; overflow: hidden;">
                     <img src="~/images/portal_estudiantes.jpg" class="card-img-top"
                          style="height: 240px; object-fit: cover;">
                     <div class="card-body text-center">
-                        <a asp-controller="EstudianteAuth" asp-action="Landing"
+                        <a asp-controller="Empresas" asp-action="pasantias"
                            class="btn btn-lg w-100 text-white"
                            style="background-color: #04a7ad; border-radius: 12px;">
-                            Portal Estudiantes
+                            Pasantías
                         </a>
                     </div>
                 </div>
             </div>
 
-            <!-- Portal Empresas -->
+            <!-- Postulaciones -->
             <div class="col-md-4">
                 <div class="card shadow border-0" style="border-radius: 20px; overflow: hidden;">
                     <img src="~/images/portal_empresas.jpg" class="card-img-top"
@@ -35,26 +35,13 @@
                         <a asp-controller="Empresas" asp-action="Index"
                            class="btn btn-lg w-100"
                            style="border: 2px solid #04a7ad; color: #04a7ad; border-radius: 12px;">
-                            Portal Empresas
+                            Postulaciones
                         </a>
                     </div>
                 </div>
             </div>
 
-            <!-- Portal Administración -->
-            <div class="col-md-4">
-                <div class="card shadow border-0" style="border-radius: 20px; overflow: hidden;">
-                    <img src="~/images/portal_admin.jpg" class="card-img-top"
-                         style="height: 240px; object-fit: cover;">
-                    <div class="card-body text-center">
-                        <a asp-controller="Administracion" asp-action="Index"
-                           class="btn btn-lg w-100 text-white"
-                           style="background-color: #027d81; border-radius: 12px;">
-                            Portal Administración
-                        </a>
-                    </div>
-                </div>
-            </div>
+            
 
         </div>
 

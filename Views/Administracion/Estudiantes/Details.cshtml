@@ -1,0 +1,16 @@
+﻿@model UAMPass.Models.Estudiante
+
+<h2 style="margin-bottom: 20px;">Detalles del Estudiante</h2>
+
+<div style="line-height: 1.8;">
+    <p><strong>Nombre:</strong> @Model.Nombre</p>
+    <p><strong>Correo:</strong> @Model.Correo</p>
+    <p><strong>Facultad:</strong> @Model.Facultad</p>
+    <p><strong>CIF:</strong> @Model.CIF</p>
+    <p><strong>Carreras:</strong> @string.Join(", ", Model.Carreras ?? new List<string>())</p>
+</div>
+
+<p style="margin-top: 20px;">
+    <a asp-action="Edit" asp-route-id="@Model.Id">Editar</a> |
+    <a asp-action="Index">Volver</a>
+</p>
