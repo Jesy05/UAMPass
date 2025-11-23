@@ -1,0 +1,70 @@
+﻿@model UAMPass.Models.Estudiante
+
+@{
+    ViewData["Title"] = "Editar Perfil";
+    var mainColor = "#04a7ad";
+    var accentColor = "#007b85";
+}
+
+<div class="container mt-5" style="max-width:600px;">
+    <div class="card shadow p-4 border-0" style="border-radius:18px;">
+
+        <h3 class="fw-bold mb-4 text-center" style="color:@mainColor;">
+            Editar Información de Perfil
+        </h3>
+
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="Id" />
+
+            <!-- Nombre -->
+            <div class="mb-3">
+                <label class="form-label fw-bold">Nombre</label>
+                <input asp-for="Nombre" class="form-control" />
+            </div>
+
+            <!-- Correo -->
+            <div class="mb-3">
+                <label class="form-label fw-bold">Correo</label>
+                <input asp-for="Correo" class="form-control" />
+            </div>
+
+            <!-- Facultad -->
+            <div class="mb-3">
+                <label class="form-label fw-bold">Facultad</label>
+                <input asp-for="Facultad" class="form-control" />
+            </div>
+
+            <!-- CIF -->
+            <div class="mb-3">
+                <label class="form-label fw-bold">CIF</label>
+                <input asp-for="CIF" class="form-control" />
+            </div>
+
+            <!-- Carreras -->
+            <div class="mb-3">
+                <label class="form-label fw-bold">Carreras (separadas por coma)</label>
+                <input class="form-control"
+                       name="Carreras"
+                       value="@string.Join(", ", Model.Carreras ?? new List<string>())" />
+            </div>
+
+            <!-- Contraseña nueva -->
+            <div class="mb-3">
+                <label class="form-label fw-bold">Nueva contraseña (opcional)</label>
+                <input type="password" name="NuevaContrasena" class="form-control" />
+            </div>
+
+            <button type="submit" class="btn w-100 mt-3 text-white"
+                    style="background-color:@mainColor; border-color:@mainColor;">
+                Guardar cambios
+            </button>
+        </form>
+
+        <div class="text-center mt-3">
+            <a asp-controller="PortalEstudiante" asp-action="Profile" style="color:@accentColor;">
+                Volver a mi perfil
+            </a>
+        </div>
+
+    </div>
+</div>

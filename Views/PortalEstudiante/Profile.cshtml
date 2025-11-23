@@ -1,0 +1,135 @@
+﻿@model UAMPass.Models.Estudiante
+@{
+    ViewData["Title"] = "Mi Perfil";
+
+    var mainColor = "#04a7ad";
+    var lightColor = "#e0f7f7";
+    var accentColor = "#007b85";
+}
+
+<div class="container mt-5">
+    <div class="card shadow-lg p-5 border-0" style="border-radius:20px;">
+
+        <div class="row align-items-center mb-4">
+            <div class="col-md-3 text-center mb-4 mb-md-0">
+                @{
+                    var foto = string.IsNullOrEmpty(Model?.FotoPerfilPath)
+                    ? Url.Content("~/images/default-avatar.jpg")
+                    : Model.FotoPerfilPath;
+                }
+
+                <img src="@foto"
+                     class="rounded-circle shadow-sm"
+                     style="width:160px; height:160px; object-fit:cover; border:5px solid @mainColor;"
+                     alt="Foto de perfil" />
+
+                <a asp-controller="Estudiantes" asp-action="Edit" asp-route-id="@Model?.Id"
+                   class="btn btn-outline-primary btn-sm mt-3"
+                   style="--bs-btn-color:@mainColor; --bs-btn-border-color:@mainColor; --bs-btn-hover-bg:@mainColor; --bs-btn-hover-border-color:@mainColor;">
+                    <i class="bi bi-pencil-square me-1"></i> Editar perfil
+                </a>
+            </div>
+
+            <div class="col-md-9">
+                <h2 class="display-6 fw-bolder mb-2 text-dark">
+                    @(string.IsNullOrEmpty(Model?.Nombre) ? "Nombre no disponible" : Model.Nombre)
+                </h2>
+
+                <hr class="mt-0 mb-3" style="border-top: 2px solid @lightColor;">
+
+                <ul class="list-unstyled">
+                    <li class="mb-1">
+                        <strong class="text-secondary me-2">
+                            <i class="bi bi-envelope-fill" style="color:@mainColor;"></i> Correo:
+                        </strong>
+                        @(string.IsNullOrEmpty(Model?.Correo) ? "-" : Model.Correo)
+                    </li>
+
+                    <li class="mb-1">
+                        <strong class="text-secondary me-2">
+                            <i class="bi bi-person-badge-fill" style="color:@mainColor;"></i> CIF:
+                        </strong>
+                        <span class="badge bg-secondary">
+                            @(string.IsNullOrEmpty(Model?.CIF) ? "No registrado" : Model.CIF)
+                        </span>
+                    </li>
+
+                    <li class="mb-1">
+                        <strong class="text-secondary me-2">
+                            <i class="bi bi-building-fill" style="color:@mainColor;"></i> Facultad:
+                        </strong>
+                        @(string.IsNullOrEmpty(Model?.Facultad) ? "No registrada" : Model.Facultad)
+                    </li>
+
+                    <li>
+                        <strong class="text-secondary me-2">
+                            <i class="bi bi-mortarboard-fill" style="color:@mainColor;"></i> Carreras:
+                        </strong>
+
+                        @if (Model?.Carreras != null && Model.Carreras.Count > 0)
+                        {
+                            foreach (var carrera in Model.Carreras)
+                            {
+                                <span class="badge rounded-pill text-bg-info me-1"
+                                      style="background-color:@mainColor !important;">
+                                    @carrera
+                                </span>
+                            }
+                        }
+                        else
+                        {
+                            <span class="text-muted">No registradas</span>
+                        }
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <hr class="my-4">
+
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h5 class="fw-bold text-dark mb-3">
+                    <i class="bi bi-file-earmark-person me-2" style="color:@mainColor;"></i>
+                    Currículum Vitae
+                </h5>
+
+                @if (!string.IsNullOrEmpty(Model?.CvPdfPath))
+                {
+                    <p class="text-muted small mb-2">Archivo: @Model.CvPdfPath</p>
+
+                    <a href="@Model.CvPdfPath" target="_blank"
+                       class="btn btn-outline-info"
+                       style="--bs-btn-color:@mainColor; --bs-btn-border-color:@mainColor;">
+                        <i class="bi bi-file-earmark-arrow-down-fill me-1"></i> Abrir CV
+                    </a>
+
+                    <a asp-controller="Estudiantes" asp-action="SubirCV" asp-route-id="@Model?.Id"
+                       class="btn btn-primary ms-2"
+                       style="background-color:@mainColor; border-color:@mainColor; --bs-btn-hover-bg:@accentColor;">
+                        <i class="bi bi-cloud-arrow-up-fill me-1"></i> Actualizar CV
+                    </a>
+                }
+                else
+                {
+                    <p class="text-muted">No has subido un CV todavía. ¡Sube tu CV para ser visible!</p>
+
+                    <a asp-controller="Estudiantes" asp-action="SubirCV" asp-route-id="@Model?.Id"
+                       class="btn btn-primary"
+                       style="background-color:@mainColor; border-color:@mainColor; --bs-btn-hover-bg:@accentColor;">
+                        <i class="bi bi-cloud-arrow-up-fill me-1"></i> Subir CV
+                    </a>
+                }
+            </div>
+
+            <div class="col-md-4 text-md-end mt-4 mt-md-0">
+                <form asp-controller="EstudianteAuth" asp-action="Logout" method="post">
+                    <button type="submit" class="btn btn-outline-danger shadow-sm">
+                        <i class="bi bi-box-arrow-right me-1"></i> Cerrar sesión
+                    </button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>

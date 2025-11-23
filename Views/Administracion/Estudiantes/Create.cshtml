@@ -1,0 +1,52 @@
+﻿@model UAMPass.Models.Estudiante
+
+@{
+    ViewData["Title"] = "Nuevo Estudiante";
+}
+
+<h2>Nuevo Estudiante</h2>
+
+<form asp-action="Create" method="post">
+    <div class="mb-3">
+        <label asp-for="Nombre" class="form-label"></label>
+        <input asp-for="Nombre" class="form-control" />
+        <span asp-validation-for="Nombre" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Correo" class="form-label"></label>
+        <input asp-for="Correo" class="form-control" />
+        <span asp-validation-for="Correo" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Facultad" class="form-label"></label>
+        <input asp-for="Facultad" class="form-control" />
+        <span asp-validation-for="Facultad" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="CareersCsv" class="form-label">Carreras (separadas por coma)</label>
+        <input asp-for="CareersCsv" class="form-control" />
+        <span asp-validation-for="CareersCsv" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="CIF" class="form-label"></label>
+        <input asp-for="CIF" class="form-control" />
+        <span asp-validation-for="CIF" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ContrasenaPlano" class="form-label">Contraseña</label>
+        <input asp-for="ContrasenaPlano" class="form-control" />
+        <span asp-validation-for="ContrasenaPlano" class="text-danger"></span>
+    </div>
+
+    <button class="btn btn-success">Guardar</button>
+    
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

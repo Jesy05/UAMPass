@@ -18,10 +18,11 @@ namespace UAMPass.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
+        public IActionResult Sobre()
         {
-            return View();
+            return View("Privacy");
         }
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
