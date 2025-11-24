@@ -87,24 +87,24 @@ namespace UAMPass.Controllers.Admin
         [HttpGet]
         public IActionResult ForgotPassword()
         {
-            ViewBag.Mensaje = "Contacte a administración para recuperación.";
             return View();
         }
 
-        // POST: /AdminAuth/ForgotPassword
         [HttpPost]
-        public IActionResult ForgotPassword(string correo)
+        public IActionResult ForgotPassword(string usuario)
         {
-            ViewBag.Mensaje = "Contacte a administración para recuperación. (Modo demo)";
-            return View();
-        }
+            // buscar admin por usuario
+            var admin = _context.Administradores.FirstOrDefault(a => a.Usuario == usuario);
 
-        // Logout
-        [HttpPost]
-        public IActionResult Logout()
-        {
-            HttpContext.Session.Clear();
-            return RedirectToAction("Login");
+            if (admin == null)
+            {
+                ViewBag.Mensaje = "No existe un administrador con ese usuario.";
+                return View();
+            }
+
+            // modo demo: sin enviar correo aún
+            ViewBag.Mensaje = "Contacta a soporte para restablecer tu contraseña. (Modo demo)";
+            return View();
         }
 
         // UTILIDAD PARA HASHEAR CONTRASEÑA

@@ -22,7 +22,7 @@
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Usuario</label>
                     <input type="text" name="usuario" class="form-control" placeholder="Ingresa tu usuario" required />
-                    </div>
+                </div>
 
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Contraseña</label>
@@ -34,8 +34,11 @@
                 </button>
 
                 <div class="text-center mt-3">
-                    <a asp-controller="AdminAuth" asp-action="Registro" class="text-success fw-semibold" style="text-decoration:none;">
-                        ¿Olvidaste tu contraseña? 
+                    <a asp-controller="AdminAuth"
+                       asp-action="ForgotPassword"
+                       class="text-success fw-semibold"
+                       style="text-decoration:none;">
+                        ¿Olvidaste tu contraseña?
                     </a>
                 </div>
 
@@ -47,4 +50,3 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
-
