@@ -69,8 +69,14 @@ namespace UAMPass.Controllers
 
             _db.Add(estudiante);
             await _db.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            // Guardar en sesión para cargar el perfil
+            HttpContext.Session.SetString("EstudianteId", estudiante.Id.ToString());
+
+            // Redirigir al perfil del estudiante que acabamos de crear
+            return RedirectToAction("Profile", "PortalEstudiante");
         }
+
 
         // MVC: GET Edit
         public async Task<IActionResult> Edit(int? id)
