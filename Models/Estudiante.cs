@@ -85,7 +85,10 @@ namespace UAMPass.Models
         public ICollection<Aplicacion> Aplicaciones { get; set; } = new List<Aplicacion>();
 
 
+<<<<<<< HEAD
         // Notificaciones del estudiante
+=======
+>>>>>>> gabi
         public ICollection<Notificacion> Notificaciones { get; set; } = new List<Notificacion>();
 
     }

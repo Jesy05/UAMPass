@@ -1,4 +1,4 @@
-﻿namespace UAMPass.Models.DTOs
+﻿namespace UAMPass.Models.Dto
 {
     public class LoginEstudianteDTO
     {

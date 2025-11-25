@@ -1,15 +1,15 @@
 ﻿@using UAMPass.Models.Dto
-@model LoginEstudianteDTO
+@model loginEmpresaDTO
 @{
     ViewData["Title"] = "Iniciar Sesión";
 }
 
-<div class="d-flex justify-content-center align-items-center" style="min-height: 90vh; background: linear-gradient(135deg, #e6f4ea, #ffffff);">
+<div class="d-flex flex-column align-items-center justify-content-center min-vh-100 text-center" style="background-color: #f9f9f9;">
     <div class="card shadow-lg border-0" style="width: 420px; border-radius: 16px;">
 
         <div class="card-body p-4">
-            <h3 class="text-center fw-bold text-success mb-3">Portal de Estudiantes</h3>
-            <p class="text-center text-muted mb-4">Inicia sesión para acceder a tus pasantías, perfil y notificaciones.</p>
+            <h3 class="text-center fw-bold text-success mb-3">Portal de Empresas</h3>
+            <p class="text-center text-muted mb-4">Inicia sesión para acceder a tu perfil y notificaciones.</p>
 
             @if (ViewData["Error"] != null)
             {
@@ -17,14 +17,13 @@
                     @ViewData["Error"]
                 </div>
             }
-
-            <form asp-action="Login" method="post">
-
+            <form asp-action="Login" method="post"
+            asp-controller="Empresas">
                 <!-- Correo -->
                 <div class="mb-3">
-                    <label class="form-label fw-semibold">Correo institucional</label>
-                    <input asp-for="Correo" class="form-control" placeholder="ejemplo@uamv.edu.ni" />
-                    <span asp-validation-for="Correo" class="text-danger"></span>
+                    <label class="form-label fw-semibold">Correo </label> 
+                    <input asp-for="ContactoEmail" class="form-control" placeholder="Ingresa tu correo" />
+                    <span asp-validation-for="ContactoEmail" class="text-danger"></span>
                 </div>
 
                 <!-- Contraseña -->
@@ -41,19 +40,12 @@
 
                 <!-- Links -->
                 <div class="text-center mt-3">
-                    <a asp-controller="EstudianteAuth"
-                       asp-action="ForgotPassword"
-                       class="text-success fw-semibold"
-                       style="text-decoration:none;">
+                    <a asp-action="Recuperar" class="text-success fw-semibold" style="text-decoration:none;">
                         ¿Olvidaste tu contraseña?
                     </a>
                 </div>
-
             </form>
+          
         </div>
     </div>
 </div>
-
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}

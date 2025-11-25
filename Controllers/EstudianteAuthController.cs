@@ -3,8 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using System.Text;
 using UAMPass.Models;
-using UAMPass.Models.DTOs;
 using System.Threading.Tasks;
+using UAMPass.Models.Dto;
 
 namespace UAMPass.Controllers
 {

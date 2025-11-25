@@ -25,6 +25,10 @@ namespace UAMPass.Controllers
 
             return View(VIEW_PATH + "Index.cshtml", estudiantes);
         }
+        public IActionResult postular()
+        {
+            return View("~/Views/PortalEstudiante/postular.cshtml");
+        }
 
         // MVC: Details
         public async Task<IActionResult> Details(int? id)

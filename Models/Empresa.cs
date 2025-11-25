@@ -11,8 +11,11 @@ namespace UAMPass.Models
         [Required, StringLength(150)]
         public string Nombre { get; set; } = string.Empty;
 
-        [EmailAddress]
+        [Required, EmailAddress]
         public string ContactoEmail { get; set; } = string.Empty;
+
+        [Required, StringLength(100)]
+        public string ContrasenaHash { get; set; } = string.Empty;
 
         [StringLength(200)]
         public string Direccion { get; set; } = string.Empty;

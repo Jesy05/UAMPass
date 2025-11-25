@@ -1,0 +1,178 @@
+﻿@model UAMPass.Models.Dto.PasantiaDto
+@{
+    ViewData["Title"] = "Postulaciones";
+}
+
+<h2>Postulaciones</h2>
+
+<div class="container mt-4">
+
+    <!-- FILTROS -->
+    <div class="row mb-3 align-items-end">
+        <div class="col-md-4">
+            <label for="empresaSelect" class="form-label">Empresa</label>
+            <select id="empresaSelect" class="form-select">
+                <option value="">-- Selecciona una empresa --</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label for="pasantiaSelect" class="form-label">Pasantía</label>
+            <select id="pasantiaSelect" class="form-select">
+                <option value="">-- Selecciona una pasantía --</option>
+            </select>
+        </div>
+        <div class="col-md-4 d-flex">
+            <button type="button" id="btnAbrirAplicar" class="btn btn-primary w-100">Aplicar</button>
+        </div>
+    </div>
+
+
+    <!-- DATATABLE -->
+    <table id="postulacionesTable" class="table table-striped table-bordered" style="width:100%">
+        <thead>
+            <tr>
+                <th>Estudiante</th>
+                <th>Título Postulación</th>
+                <th>Empresa</th>
+                <th>Fecha Aplicacion</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <!-- MODAL APLICAR -->
+    <div class="modal fade" id="aplicarModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmar Aplicación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <label class="form-label">Comentario (opcional)</label>
+                    <textarea id="comentarioAplicacion" class="form-control" rows="3"></textarea>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Cancelar
+                    </button>
+
+                    <button type="button" id="btnEnviarAplicacion" class="btn btn-primary">
+                        Aplicar
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    <!-- jQuery y DataTables -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+    <script>
+
+
+        $(document).ready(function () {
+            var idEstudiante = @(Context.Session.GetString("EstudianteId") != null
+                                                                    ? Context.Session.GetString("EstudianteId")
+                    : 0);
+            // Abrir modal al presionar Aplicar
+        $('#btnAbrirAplicar').on('click', function () {
+            var pasantiaId = $('#pasantiaSelect').val();
+
+                if (!pasantiaId) {
+                        alert("Selecciona una pasantía antes de aplicar.");
+                        return;
+                }
+
+                $('#aplicarModal').modal('show');
+            });
+                // ENVIAR POST AL ACEPTAR EN MODAL
+            $('#btnEnviarAplicacion').on('click', function () {
+                var pasantiaId = $('#pasantiaSelect').val();
+                var comentario = $('#comentarioAplicacion').val();
+
+                $.ajax({
+                    url: '/api/postulaciones',
+                    type: 'POST',
+                    contentType: 'application/json; charset=utf-8',
+                    data: JSON.stringify({
+                        EstudianteId: idEstudiante,
+                        PasantiaId: parseInt(pasantiaId),
+                        Comentarios: comentario
+                    }),
+                    success: function () {
+                        $('#aplicarModal').modal('hide');
+                        $('#comentarioAplicacion').val('');
+                        table.ajax.reload(); // refrescar DataTable
+                        alert('Postulación enviada correctamente ');
+                    },
+                    error: function () {
+                        alert('Error al enviar la postulación ');
+                    }
+                });
+            });
+
+            // Inicializar DataTable
+            var table = $('#postulacionesTable').DataTable({
+                ajax: {
+                    url: '/api/postulaciones', // endpoint API
+                    data: function(d) {
+                        d.IdEstudiante = idEstudiante;
+                    },
+                    dataSrc: ''
+                },
+                columns: [
+                    { data: 'estudiante' },
+                    { data: 'pasantia' },
+                    { data: 'empresa'},
+                    { data: 'fechaAplicacion', render: function(data) {
+                        return new Date(data).toLocaleDateString();
+                    }},
+                    { data: 'estado' }
+                ]
+            });
+
+            // Cargar empresas
+            $.getJSON('/api/empresas', function (data) {
+                $.each(data, function (i, item) {
+                    $('#empresaSelect').append($('<option>', {
+                        value: item.id,
+                        text: item.nombre
+                    }));
+                });
+            });
+
+            // Al cambiar empresa, cargar pasantías correspondientes
+            $('#empresaSelect').on('change', function () {
+                var empresaId = $(this).val();
+                $('#pasantiaSelect').empty().append('<option value="">-- Selecciona una pasantía --</option>');
+
+                if (empresaId) {
+                    $.getJSON('/api/pasantias?IdEmpresa=' + empresaId, function (data) {
+                        $.each(data, function (i, item) {
+                            $('#pasantiaSelect').append($('<option>', {
+                                value: item.idPasantia,
+                                text: item.titulo
+                            }));
+                        });
+                    });
+                }
+
+                //table.ajax.reload();
+            });
+
+
+        });
+    </script>
+}
+
