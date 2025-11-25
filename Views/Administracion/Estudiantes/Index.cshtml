@@ -1,0 +1,37 @@
+﻿@model IEnumerable<UAMPass.Models.Estudiante>
+
+<h2 style="margin-bottom: 20px;">Estudiantes</h2>
+
+<p>
+    <a asp-action="Create">Crear nuevo</a>
+</p>
+
+<table style="border-collapse: collapse; width: 100%;">
+    <thead>
+        <tr style="text-align: left; border-bottom: 1px solid #ccc;">
+            <th>Nombre</th>
+            <th>Correo</th>
+            <th>Facultad</th>
+            <th>CIF</th>
+            <th>Carreras</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr style="border-bottom: 1px solid #eee;">
+                <td>@item.Nombre</td>
+                <td>@item.Correo</td>
+                <td>@item.Facultad</td>
+                <td>@item.CIF</td>
+                <td>@string.Join(", ", item.Carreras ?? new List<string>())</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id">Ver</a> |
+                    <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
