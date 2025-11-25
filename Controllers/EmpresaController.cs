@@ -5,6 +5,7 @@ using System.Text;
 using UAMPass.Models;
 using System.Threading.Tasks;
 using UAMPass.Models.Dto;
+using Microsoft.AspNetCore.Http;
 
 namespace UAMPass.Controllers
 {
@@ -18,9 +19,12 @@ namespace UAMPass.Controllers
 
         public IActionResult Index()
         {
+            var session = HttpContext.Session.GetString("empresaID");
+            if (!string.IsNullOrEmpty(session))
+                return RedirectToAction("portalEmpresa", "Empresas");
             return View();
         }
-       
+
         //get: Empresa/login
         [HttpGet]
         public IActionResult Login()
@@ -31,6 +35,9 @@ namespace UAMPass.Controllers
         [HttpGet]
         public IActionResult portalEmpresa()
         {
+            var session = HttpContext.Session.GetString("empresaID");
+            if (string.IsNullOrEmpty(session))
+                return RedirectToAction("Login", "Empresas");
             return View();
         }
         [HttpGet]
@@ -60,7 +67,8 @@ namespace UAMPass.Controllers
                 if (empresa != null)
                 {
                     // Autenticación exitosa
-                    return RedirectToAction("portalEmpresa","Empresas");
+                    HttpContext.Session.SetString("empresaID", empresa.Id.ToString());
+                    return RedirectToAction("portalEmpresa", "Empresas");
                 }
                 else
                 {
@@ -75,6 +83,22 @@ namespace UAMPass.Controllers
                 throw;
             }
 
+        }
+
+        [HttpPost]
+        public IActionResult logout()
+        {
+            try
+            {
+                HttpContext.Session.Remove("empresaID");
+                HttpContext.Session.Clear();
+                return RedirectToAction("Index", "Home");
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         // GET: /empresa/Register
@@ -99,6 +123,7 @@ namespace UAMPass.Controllers
                 empresa.Nombre = obj.Nombre;
                 empresa.ContactoEmail = obj.ContactoEmail;
                 empresa.SitioWeb = obj.SitioWeb;
+                empresa.Direccion = obj.Direccion;
                 using var sha256 = SHA256.Create();
                 var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(obj.ContrasenaHash ?? string.Empty));
                 empresa.ContrasenaHash = Convert.ToBase64String(bytes);
@@ -106,7 +131,7 @@ namespace UAMPass.Controllers
                 await _db.Empresas.AddAsync(empresa);
                 await _db.SaveChangesAsync();
 
-                return RedirectToAction("index","Empresas");
+                return RedirectToAction("Login", "Empresas");
             }
             catch (Exception ex)
             {
@@ -115,6 +140,50 @@ namespace UAMPass.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("api/empresas")]
+        public async Task<IActionResult> getEmpresas()
+        {
+            try
+            {
+                var data = await _db.Empresas
+                    .Select(s => new listEmpresa
+                    {
+                        Id = s.Id,
+                        Nombre = s.Nombre
+                    }).ToListAsync();
+
+                return Ok(data);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        [HttpGet]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult ForgotPassword(string usuario)
+        {
+            // buscar admin por usuario
+            var empresa = _db.Empresas.FirstOrDefault(a => a.ContactoEmail == usuario);
+
+            if (empresa == null)
+            {
+                ViewBag.Mensaje = "No existe una empresa con ese usuario.";
+                return View();
+            }
+
+            // modo demo: sin enviar correo aún
+            ViewBag.Mensaje = "Contacta a soporte para restablecer tu contraseña. (Modo demo)";
+            return View();
+        }
     }
 
 }

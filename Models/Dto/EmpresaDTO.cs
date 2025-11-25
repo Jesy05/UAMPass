@@ -20,4 +20,10 @@ namespace UAMPass.Models.Dto
         [MinLength(5,ErrorMessage = "La contraseña debe de tener minimo 5 caracteres")]
         public string ContrasenaHash { get; set; }
     }
+
+    public class listEmpresa
+    {
+        public int Id { get; set; }
+        public string Nombre { get; set; }
+    }
 }

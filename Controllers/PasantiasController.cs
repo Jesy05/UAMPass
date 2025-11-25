@@ -58,7 +58,7 @@ namespace UAMPass.Controllers
 
                 pasantia.Titulo = obj.titulo;
                 pasantia.Descripcion = obj.descripcion;
-                pasantia.EmpresaId = obj.empresa;
+                pasantia.EmpresaId = Convert.ToInt32(HttpContext.Session.GetString("EmpresaId"));
                 pasantia.RequiredCareers = obj.RequiredCareersCsv;
 
                 await _db.Pasantias.AddAsync(pasantia);
