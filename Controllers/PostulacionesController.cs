@@ -44,7 +44,7 @@ namespace UAMPass.Controllers
 
         [HttpPost]
         [Route("api/postulaciones")]
-        public async Task<IActionResult> postPostulaciones([FromBody] createApplication obj)
+        public async Task<IActionResult> postPostulaciones([FromBody] createApplicationDto obj)
         {
             try
             {

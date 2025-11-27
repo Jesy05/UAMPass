@@ -13,7 +13,7 @@
             public string empresa { get; set; }
         }
 
-        public class createApplication
+        public class createApplicationDto
         {
             public int PasantiaId { get; set; }
             public int EstudianteId { get; set; }

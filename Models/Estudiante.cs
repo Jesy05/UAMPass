@@ -65,9 +65,10 @@ namespace UAMPass.Models
         [StringLength(10)]
         public string? CodigoRecuperacion { get; set; }
 
-        // ---------------------------
+        public string? ResetToken { get; set; }
+        public DateTime? TokenExpiration { get; set; }
+
         // PERFIL DEL ESTUDIANTE
-        // ---------------------------
 
         // CV PDF (ruta en el sistema)
         [StringLength(300)]
@@ -85,10 +86,7 @@ namespace UAMPass.Models
         public ICollection<Aplicacion> Aplicaciones { get; set; } = new List<Aplicacion>();
 
 
-<<<<<<< HEAD
         // Notificaciones del estudiante
-=======
->>>>>>> gabi
         public ICollection<Notificacion> Notificaciones { get; set; } = new List<Notificacion>();
 
     }
