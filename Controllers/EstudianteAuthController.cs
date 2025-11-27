@@ -122,29 +122,78 @@ namespace UAMPass.Controllers
         }
 
         // POST: /EstudianteAuth/ForgotPassword
-        [HttpPost]
-        public async Task<IActionResult> ForgotPassword(string correo)
-        {
-            if (string.IsNullOrWhiteSpace(correo))
-            {
-                ViewBag.Mensaje = "Ingresa tu correo.";
-                return View();
-            }
+        // GET: /EstudianteAuth/ForgotPassword
+ [HttpPost] //Cambiamos a modo POST porque enviaremos informacion
+ public async Task<IActionResult> ForgotPassword(string correo)
+ {
+     if (string.IsNullOrWhiteSpace(correo)) //Validacion basica: Evita los campos vacios que generan excepciones
+     {
+         ViewBag.Mensaje = "Ingresa tu correo.";
+         return View();
+     }
+     var estudiante = await _db.Estudiantes
+         .AsNoTracking()
+         .FirstOrDefaultAsync(e => e.Correo == correo);
+     if (estudiante == null)
+     {
+         ViewBag.Mensaje = "No se encontró una cuenta relacionada con el correo.";
+         
+     }
+   var token = Guid.NewGuid().ToString(); //Generamos un token unico para el reseteo de contraseña
+   estudiante.ResetToken = token;
+   estudiante.TokenExpiration = DateTime.Now.AddHours(1); //Una hora de expiracion del codigo de token
+   await _db.SaveChangesAsync();
+     //COnstruccion del enlace del reseteo
+     var resetLink = Url.Action("ResetPassword", "EstudianteAuth", 
+         new {token = token }, Request.Scheme);
+     //Envio del correo
+     var mail = new MailMessage();
+     mail.To.Add(estudiante.Correo);
+     mail.From = new MailAddress("UAMPass@uamv.edu.ni");
+     mail.Subject = "Recuperación de contraseña UAMPass";
+     mail.Body = $"Hola {estudiante.Nombre},\n\n" +
+         $"Haz clic en el siguiente enlace para restablecer tu contraseña:\n{resetLink}\n\n" +
+         "Si no solicitaste este cambio, ignora este correo.\n\n" +
+         "Saludos,\nEquipo UAMPass";
+     mail.IsBodyHtml = true;
 
-            var estudiante = await _db.Estudiantes
-                .AsNoTracking()
-                .FirstOrDefaultAsync(e => e.Correo == correo);
+     using (var smtp = new SmtpClient("smtp.uamv.edu.ni", 587)) //Configurar el servidor SMTP
+     {
+         smtp.Credentials = new NetworkCredential("usuarioSMTP", "claveSMTP"); //Credenciales del servidor SMTP
+         smtp.EnableSsl = true;
+         await smtp.SendMailAsync(mail);
 
-            if (estudiante == null)
-            {
-                ViewBag.Mensaje = "No se encontró una cuenta con ese correo.";
-                return View();
-            }
+     }
+     ViewBag.Messaje = "Se ha enviado un enlace de restablecimiento de contraseña a tu correo.";
 
-            // Demo: en producción enviar mail; aquí mostrar instrucción
-            ViewBag.Mensaje = "Para recuperar la contraseña contacta a administración. (Modo demo)";
-            return View();
-        }
+     [HttpGet]
+     public IActionResult ResetPassword(string token)
+     {
+         var estudiante = _db.Estudiantes.FirstOrDefault(e => e.ResetToken == token && e.TokenExpiration > DateTime.Now);
+         if (estudiante == null)
+         {
+             return BadRequest("Token inválido o expirado.");
+         }
+         return View(new ResetPasswordViewModel { Token = token });
+     }
+
+     [HttpPost] //Reseteo de contraseña
+     public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+     {
+         var estudiante = await _db.Estudiantes.FirstOrDefaultAsync(e => e.ResetToken == model.Token && e.TokenExpiration > DateTime.Now);
+         if (estudiante == null)
+         {
+             return BadRequest("Token inválido o expirado.");
+         }
+
+         // Guardar nueva contraseña (idealmente con hash)
+         estudiante.Contraseña = model.NewPassword;
+         estudiante.ResetToken = null; // invalidar token
+         await _db.SaveChangesAsync();
+
+         return RedirectToAction("Login");
+     }
+
 
         // Logout
         [HttpPost]
