@@ -5,6 +5,7 @@ using System.Text;
 using UAMPass.Models;
 using System;
 using System.Threading.Tasks;
+using UAMPass.Models.Dto; 
 
 namespace UAMPass.Controllers.Admin
 {
@@ -33,40 +34,43 @@ namespace UAMPass.Controllers.Admin
 
         // POST: /AdminAuth/Login (Procesa el Login)
         [HttpPost]
-        public async Task<IActionResult> Login(string usuario, string contrasena)
+        //  Recibe el DTO (que contiene las reglas [Required])
+        public async Task<IActionResult> Login(LoginAdministradorDTO model)
         {
-            if (string.IsNullOrWhiteSpace(usuario) || string.IsNullOrWhiteSpace(contrasena))
+            // Si el ModelState NO es válido (campos vacíos), regresa la vista para mostrar los errores del DTO.
+            if (!ModelState.IsValid)
             {
-                ViewBag.Error = "Debe ingresar usuario y contraseña.";
-                return View();
+                return View(model);
             }
 
+            //  Usar model.Usuario en lugar de la variable 'usuario'
             var admin = await _context.Administradores
-                .FirstOrDefaultAsync(a => a.Usuario == usuario);
+                .FirstOrDefaultAsync(a => a.Usuario == model.Usuario);
 
             if (admin == null)
             {
                 ViewBag.Error = "Credenciales incorrectas.";
-                return View();
+                return View(model); // Retorna el modelo para que la vista recargue los campos
             }
 
-            var hashIngresado = Hash(contrasena);
+            //  Usar model.Contrasena en lugar de la variable 'contrasena'
+            var hashIngresado = Hash(model.Contrasena);
 
             // Bloque donde verifica si la contraseña es incorrecta
             if (admin.ContrasenaHash != hashIngresado)
             {
                 ViewBag.Error = "Credenciales incorrectas.";
-                return View();
+                return View(model); // Retorna el modelo
             }
 
-            // 🛑 LÓGICA DE REDIRECCIÓN EXITOSA
-            // Login exitoso: guardar datos en sesión
+            // LÓGICA DE REDIRECCIÓN EXITOSA
             HttpContext.Session.SetString("AdminId", admin.Id.ToString());
             HttpContext.Session.SetString("AdminUser", admin.Usuario);
 
-            // Redirige al método Index del controlador Administradores (la lista de estudiantes)
+
             return RedirectToAction("Index", "Administradores");
         }
+
 
         // GET: /AdminAuth/Registro
         [HttpGet]

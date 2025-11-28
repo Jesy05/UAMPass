@@ -167,7 +167,7 @@ namespace UAMPass.Controllers
 
             using (var smtp = new SmtpClient("smtp.uamv.edu.ni", 587))
             {
-                // 🛑 NOTA: Debes descomentar y reemplazar con tus credenciales SMTP reales para que funcione
+                // Debes descomentar y reemplazar con tus credenciales SMTP reales para que funcione
                 // smtp.Credentials = new NetworkCredential("usuarioSMTP", "claveSMTP"); 
                 smtp.EnableSsl = true;
                 // await smtp.SendMailAsync(mail); // Descomentar para enviar el correo real
