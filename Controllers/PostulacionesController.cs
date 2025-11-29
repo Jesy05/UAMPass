@@ -49,9 +49,9 @@ namespace UAMPass.Controllers
             try
             {
                 Aplicacion aplicacion = new Aplicacion();
-                if (obj.EstudianteId == null || obj.EstudianteId == 0)
+                    if (obj.EstudianteId == 0)
                     throw new Exception("El estudiante es obligatorio");
-                if (obj.PasantiaId == null || obj.PasantiaId == 0)
+                if (obj.PasantiaId == 0)
                     throw new Exception("Debe seleccionar una propuesta de pasantía.");
 
                 aplicacion.EstudianteId = obj.EstudianteId;
