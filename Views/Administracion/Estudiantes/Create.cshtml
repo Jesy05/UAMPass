@@ -62,7 +62,9 @@
                 </div>
 
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
-                    <a asp-action="Index" class="btn btn-secondary me-md-2">Cancelar</a>
+                    @* CORREGIDO: Ahora lleva al Home (Inicio) *@
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-secondary me-md-2">Cancelar</a>
+
                     <button type="submit" class="btn btn-success px-5">
                         <i class="bi bi-check-circle-fill"></i> Guardar
                     </button>
