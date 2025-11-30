@@ -1,0 +1,38 @@
+﻿@model UAMPass.Models.Estudiante
+
+@{
+    ViewData["Title"] = "Subir Curriculum";
+}
+
+<div class="container mt-5" style="max-width: 600px;">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-primary text-white text-center">
+            <h4 class="mb-0">Actualizar Curriculum Vitae</h4>
+        </div>
+        <div class="card-body p-4">
+
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle-fill"></i> Sube tu CV en formato <strong>PDF</strong> para que las empresas puedan verlo.
+            </div>
+
+            @* enctype es OBLIGATORIO para subir archivos *@
+            <form asp-controller="PortalEstudiante" asp-action="SubirCV" method="post" enctype="multipart/form-data">
+
+                <input type="hidden" asp-for="Id" />
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Seleccionar archivo PDF</label>
+                    <input asp-for="ArchivoCV" type="file" class="form-control" accept=".pdf" required />
+                    <span asp-validation-for="ArchivoCV" class="text-danger"></span>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="bi bi-cloud-upload-fill"></i> Subir Archivo
+                    </button>
+                    <a asp-action="Profile" class="btn btn-outline-secondary">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

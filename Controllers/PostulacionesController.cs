@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using UAMPass.Models;
 using UAMPass.Models.Dto;
-using static UAMPass.Models.Dto.aplicacionDto;
+using static UAMPass.Models.Dto.AplicacionDto; // CORREGIDO: AplicacionDto
 
 namespace UAMPass.Controllers
 {
@@ -19,19 +19,19 @@ namespace UAMPass.Controllers
         }
         [HttpGet]
         [Route("api/postulaciones")]
-        public async Task<IActionResult> getPostulaciones([FromQuery] aplicacionDto param)
+        public async Task<IActionResult> getPostulaciones([FromQuery] AplicacionDto param) // CORREGIDO
         {
             try
             {
                 var data = await _context.Aplicaciones.Where(w => (!param.IdEstudiante.HasValue || w.EstudianteId == param.IdEstudiante)
                 && (!param.IdEmpresa.HasValue || w.Pasantia.Empresa.Id == param.IdEmpresa))
-                    .Select(s => new listAplicacion
+                    .Select(s => new ListAplicacion // CORREGIDO
                     {
                         Estudiante = s.Estudiante.Nombre,
                         Pasantia = s.Pasantia.Titulo,
                         FechaAplicacion = s.FechaAplicacion,
                         Estado = s.Status.ToString(),
-                        empresa = s.Pasantia.Empresa.Nombre
+                        Empresa = s.Pasantia.Empresa.Nombre // CORREGIDO: Empresa con mayúscula
                     }).ToListAsync();
                 return Ok(data);
             }
@@ -44,12 +44,12 @@ namespace UAMPass.Controllers
 
         [HttpPost]
         [Route("api/postulaciones")]
-        public async Task<IActionResult> postPostulaciones([FromBody] createApplicationDto obj)
+        public async Task<IActionResult> postPostulaciones([FromBody] CreateApplicationDto obj) // CORREGIDO
         {
             try
             {
                 Aplicacion aplicacion = new Aplicacion();
-                    if (obj.EstudianteId == 0)
+                if (obj.EstudianteId == 0)
                     throw new Exception("El estudiante es obligatorio");
                 if (obj.PasantiaId == 0)
                     throw new Exception("Debe seleccionar una propuesta de pasantía.");
@@ -72,4 +72,3 @@ namespace UAMPass.Controllers
         }
     }
 }
-

@@ -9,10 +9,10 @@ using Microsoft.AspNetCore.Http;
 
 namespace UAMPass.Controllers
 {
-    public class EmpresasController : Controller
+    public class EmpresaController : Controller
     {
         private readonly ApplicationDbContext _db;
-        public EmpresasController(ApplicationDbContext db)
+        public EmpresaController(ApplicationDbContext db)
         {
             _db = db;
         }
@@ -29,7 +29,8 @@ namespace UAMPass.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-            return View(new loginEmpresaDTO());
+            // CORREGIDO: LoginEmpresaDTO (Mayúscula)
+            return View(new LoginEmpresaDTO());
         }
 
         [HttpGet]
@@ -47,7 +48,7 @@ namespace UAMPass.Controllers
         }
         //post: Empresa/login
         [HttpPost]
-        public async Task<IActionResult> Login(loginEmpresaDTO dto)
+        public async Task<IActionResult> Login(LoginEmpresaDTO dto) // CORREGIDO: LoginEmpresaDTO
         {
             try
             {
@@ -100,90 +101,5 @@ namespace UAMPass.Controllers
                 throw;
             }
         }
-
-        // GET: /empresa/Register
-        [HttpGet]
-        public IActionResult Register()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Register(createEmpresa obj)
-        {
-            try
-            {
-                Empresa empresa = new Empresa();
-
-                var data = await _db.Empresas.Where(w => w.ContactoEmail == obj.ContactoEmail).FirstOrDefaultAsync();
-
-                if (data != null)
-                    throw new Exception("La empresa ya existe");
-
-                empresa.Nombre = obj.Nombre;
-                empresa.ContactoEmail = obj.ContactoEmail;
-                empresa.SitioWeb = obj.SitioWeb;
-                empresa.Direccion = obj.Direccion;
-                using var sha256 = SHA256.Create();
-                var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(obj.ContrasenaHash ?? string.Empty));
-                empresa.ContrasenaHash = Convert.ToBase64String(bytes);
-
-                await _db.Empresas.AddAsync(empresa);
-                await _db.SaveChangesAsync();
-
-                return RedirectToAction("Login", "Empresas");
-            }
-            catch (Exception ex)
-            {
-
-                throw new Exception(ex.Message);
-            }
-        }
-
-        [HttpGet]
-        [Route("api/empresas")]
-        public async Task<IActionResult> getEmpresas()
-        {
-            try
-            {
-                var data = await _db.Empresas
-                    .Select(s => new listEmpresa
-                    {
-                        Id = s.Id,
-                        Nombre = s.Nombre
-                    }).ToListAsync();
-
-                return Ok(data);
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-        }
-
-        [HttpGet]
-        public IActionResult ForgotPassword()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public IActionResult ForgotPassword(string usuario)
-        {
-            // buscar admin por usuario
-            var empresa = _db.Empresas.FirstOrDefault(a => a.ContactoEmail == usuario);
-
-            if (empresa == null)
-            {
-                ViewBag.Mensaje = "No existe una empresa con ese usuario.";
-                return View();
-            }
-
-            // modo demo: sin enviar correo aún
-            ViewBag.Mensaje = "Contacta a soporte para restablecer tu contraseña. (Modo demo)";
-            return View();
-        }
     }
-
 }

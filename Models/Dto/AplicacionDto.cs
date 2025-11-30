@@ -1,19 +1,22 @@
-﻿namespace UAMPass.Models.Dto
+﻿using System;
+
+namespace UAMPass.Models.Dto
 {
-    public class aplicacionDto
+    public class AplicacionDto // Cambié a Mayúscula
     {
         public int? IdEstudiante { get; set; }
         public int? IdEmpresa { get; set; }
-        public class listAplicacion
+
+        public class ListAplicacion // Cambié a Mayúscula
         {
-            public string Estudiante { get; set; }
-            public string Pasantia { get; set; }
+            public string Estudiante { get; set; } = string.Empty;
+            public string Pasantia { get; set; } = string.Empty;
             public DateTime FechaAplicacion { get; set; }
-            public string Estado { get; set; }
-            public string empresa { get; set; }
+            public string Estado { get; set; } = string.Empty;
+            public string Empresa { get; set; } = string.Empty; // Corregido 'empresa' a 'Empresa'
         }
 
-        public class createApplicationDto
+        public class CreateApplicationDto // Cambié a Mayúscula
         {
             public int PasantiaId { get; set; }
             public int EstudianteId { get; set; }
