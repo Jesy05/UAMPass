@@ -8,8 +8,9 @@
     <div class="card shadow-lg border-0" style="width: 420px; border-radius: 16px;">
 
         <div class="card-body p-4">
-            <h3 class="text-center fw-bold text-success mb-3">Portal de Empresas</h3>
+            <h3 class="text-center fw-bold text-primary mb-3">Portal de Empresas</h3>
             <p class="text-center text-muted mb-4">Inicia sesión para acceder a tu perfil y notificaciones.</p>
+            
 
             @if (ViewData["Error"] != null)
             {
@@ -33,14 +34,15 @@
                     <span asp-validation-for="Contrasena" class="text-danger"></span>
                 </div>
 
+
                 <!-- Botón -->
-                <button type="submit" class="btn btn-success w-100 py-2 fw-bold">
+                <button type="submit" class="btn w-100 py-2 fw-bold text-white" style="background-color: #04a7ad ">
                     Iniciar Sesión
                 </button>
 
                 <!-- Links -->
                 <div class="text-center mt-3">
-                    <a asp-action="Recuperar" class="text-success fw-semibold" style="text-decoration:none;">
+                    <a asp-action="Recuperar" class="text-primary fw-semibold" style="text-decoration:none;">
                         ¿Olvidaste tu contraseña?
                     </a>
                 </div>

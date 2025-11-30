@@ -49,9 +49,9 @@ namespace UAMPass.Controllers
             try
             {
                 Aplicacion aplicacion = new Aplicacion();
-                if (obj.EstudianteId == null || obj.EstudianteId == 0)
+                if (obj.EstudianteId == 0 || obj.EstudianteId == 0)
                     throw new Exception("El estudiante es obligatorio");
-                if (obj.PasantiaId == null || obj.PasantiaId == 0)
+                if (obj.PasantiaId == 0 || obj.PasantiaId == 0)
                     throw new Exception("Debe seleccionar una propuesta de pasantía.");
 
                 aplicacion.EstudianteId = obj.EstudianteId;
@@ -70,6 +70,58 @@ namespace UAMPass.Controllers
                 throw new Exception(ex.Message);
             }
         }
+
+
+
+        [HttpGet]
+        public async Task<IActionResult> getPostulaciones()
+        {
+
+            try
+            {
+                var empresaId = Convert.ToInt32(HttpContext.Session.GetString("empresaID"));
+                if (empresaId == 0)
+                {
+                    return Unauthorized(new { success = false, mensaje = "No se encontró la empresa en la sesión." });
+                }
+                var data = await _context.Aplicaciones
+                    .Where(p => p.Pasantia.EmpresaId == empresaId)
+                    .Select(p => new
+                    {
+                        id = p.Id,
+                        Estudiante = p.Estudiante.Nombre,
+                        Pasantia = p.Pasantia.Titulo,
+                        FechaAplicacion = p.FechaAplicacion.ToString("dd/MM/yyyy"),
+                        Estado = p.Status.ToString(),
+                    }).
+                        ToListAsync();
+                return Ok(new { data });
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> CambiarEstado([FromBody] EstadoDto obj)
+        {
+            var aplicacion = await _context.Aplicaciones.FirstOrDefaultAsync(a => a.Id == obj.Id);
+            if (aplicacion == null)
+                return NotFound(new { success = false, mensaje = "La postulación no existe." });
+
+            if (!Enum.TryParse<ApplicationStatus>(obj.Estado, out var nuevoEstado))
+                return BadRequest(new { success = false, mensaje = "Estado inválido." });
+
+            aplicacion.Status = nuevoEstado;
+            await _context.SaveChangesAsync();
+
+            return Ok(new { success = true, nuevoEstado = aplicacion.Status });
+
+        }
+
+
     }
 }
 

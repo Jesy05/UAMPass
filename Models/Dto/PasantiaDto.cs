@@ -4,9 +4,10 @@
     {
         public class Pasantias
         {
-            public string titulo { get; set; }
-            public string descripcion { get; set; }
-            public List<string> RequiredCareersCsv { get; set; }
+            public int Id { get; set; }
+            public string titulo { get; set; } = string.Empty;
+            public string descripcion { get; set; } = string.Empty;
+            public List<string> RequiredCareersCsv { get; set; } 
             public int empresa { get; set; }
         }
 
@@ -17,8 +18,9 @@
         public class listPasantia:Pasantias
         {
             public int IdPasantia { get; set; }
-            public string NombreEmpresa { get; set; }
-            public string carrerasPermitidas { get; set; }
+            public string NombreEmpresa { get; set; } = string.Empty;
+            public string carrerasPermitidas { get; set; } = string.Empty;
         }
+
     }
 }

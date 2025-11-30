@@ -1,5 +1,156 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model UAMPass.Models.Dto.PasantiaDto
 @{
+    ViewData["Title"] = "Postulaciones";
 }
+
+<h2>Postulaciones</h2>
+
+
+
+<!-- DATATABLE -->
+<table id="postulacionesTable" class="table table-striped table-bordered" style="width:100%">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Estudiante</th>
+            <th>Pasantia</th>
+            <th>Fecha Aplicacion</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+
+@section Scripts {
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+    <script>
+        $(document).ready(function () {
+            $('#postulacionesTable').DataTable({
+                "ajax": {
+                    "url": "/Postulaciones/GetPostulaciones",
+                    "type": "GET",
+                    "dataSrc": "data"
+                },
+                "columns": [
+                    { "data": "id", "visible": false },
+                    { "data": "estudiante" },
+                    { "data": "pasantia" },
+                    { "data": "fechaAplicacion" },
+                    { "data": "estado" },
+                    {
+                        "data": "Acciones",
+                        "render": function (data, type, row) {
+                            return `
+                                <button class="btn btn-success btn-entrevista" data-id="${row.id}">Entrevistar</button>
+                                <button class="btn btn-success btn-aceptar" data-id="${row.id}">Aceptar</button>
+                                <button class="btn btn-warning btn-completa" data-id="${row.id}">Completada</button>
+                                <button class="btn btn-danger btn-rechazar" data-id="${row.id}">Rechazar</button>
+                                
+                            `;
+                        }
+                    }
+                ],
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
+                }
+            });
+        });
+
+        $(document).on('click', '.btn-entrevista', function () {
+            var id = $(this).data('id');
+            var estado = "Interview"; 
+
+            $.ajax({
+                url: '/Postulaciones/CambiarEstado',  
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify({ id: id, estado: estado }),
+                success: function (response) {
+                    if (response.success) {
+                        alert("Estado cambiado a: " + response.nuevoEstado);
+                        $('#postulacionesTable').DataTable().ajax.reload();
+                    } else {
+                        alert("Error: " + response.mensaje);
+                    }
+                }
+            });
+        });
+
+                
+        $(document).on('click', '.btn-aceptar', function () {
+            var id = $(this).data('id');
+            var estado = "Accepted";
+
+            $.ajax({
+                url: '/Postulaciones/CambiarEstado',
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify({ id: id, estado: estado }),
+                success: function (response) {
+                    if (response.success) {
+                        alert("Estado cambiado a: " + response.nuevoEstado);
+                        $('#postulacionesTable').DataTable().ajax.reload();
+                    } else {
+                        alert("Error: " + response.mensaje);
+                    }
+                }
+            });
+        });
+        
+        $(document).on('click', '.btn-rechazar', function () {
+            var id = $(this).data('id');
+            var estado = "Rejected";
+
+            $.ajax({
+                url: '/Postulaciones/CambiarEstado',
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify({ id: id, estado: estado }),
+                success: function (response) {
+                    if (response.success) {
+                        alert("Estado cambiado a: " + response.nuevoEstado);
+                        $('#postulacionesTable').DataTable().ajax.reload();
+                    } else {
+                        alert("Error: " + response.mensaje);
+                    }
+                }
+            });
+        });
+
+        $(document).on('click', '.btn-completa', function () {
+            var id = $(this).data('id');
+            var estado = "Completed";
+
+            $.ajax({
+                url: '/Postulaciones/CambiarEstado',
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify({ id: id, estado: estado }),
+                success: function (response) {
+                    if (response.success) {
+                        alert("Estado cambiado a: " + response.nuevoEstado);
+                        $('#postulacionesTable').DataTable().ajax.reload();
+                    } else {
+                        alert("Error: " + response.mensaje);
+                    }
+                }
+            });
+        });
+    </script>
+}
+
+
+
+
+
+
+
+
+

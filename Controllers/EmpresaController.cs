@@ -45,17 +45,17 @@ namespace UAMPass.Controllers
         {
             return View();
         }
+
+        public IActionResult Postulaciones()
+        {
+            return View();
+        }
         //post: Empresa/login
         [HttpPost]
         public async Task<IActionResult> Login(loginEmpresaDTO dto)
         {
             try
             {
-
-                if (dto.ContactoEmail == string.Empty)
-                    throw new Exception("El correo no puede estar vacío.");
-                if (dto.Contrasena == string.Empty)
-                    throw new Exception("La contraseña no puede estar vacía.");
                 using var sha256 = SHA256.Create();
                 var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(dto.Contrasena ?? string.Empty));
                 dto.Contrasena = Convert.ToBase64String(bytes);
@@ -77,10 +77,10 @@ namespace UAMPass.Controllers
                     return View(dto);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw new Exception(ex.Message);
             }
 
         }
@@ -135,8 +135,8 @@ namespace UAMPass.Controllers
             }
             catch (Exception ex)
             {
-
-                throw new Exception(ex.Message);
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return View();
             }
         }
 

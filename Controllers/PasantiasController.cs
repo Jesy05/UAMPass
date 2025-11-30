@@ -27,6 +27,7 @@ namespace UAMPass.Controllers
                 var data = await _db.Pasantias.
                     Select(s => new PasantiaDto.listPasantia
                     {
+                        Id = s.Id,
                         titulo = s.Titulo,
                         descripcion = s.Descripcion,
                         empresa = s.EmpresaId,
@@ -58,8 +59,8 @@ namespace UAMPass.Controllers
 
                 pasantia.Titulo = obj.titulo;
                 pasantia.Descripcion = obj.descripcion;
-                pasantia.EmpresaId = Convert.ToInt32(HttpContext.Session.GetString("EmpresaId"));
-                pasantia.RequiredCareers = obj.RequiredCareersCsv;
+                pasantia.EmpresaId = Convert.ToInt32(HttpContext.Session.GetString("empresaID"));
+                pasantia.RequiredCareersCsv = string.Join(", ", obj.RequiredCareersCsv);
 
                 await _db.Pasantias.AddAsync(pasantia);
                 await _db.SaveChangesAsync();
@@ -70,7 +71,47 @@ namespace UAMPass.Controllers
             {
                 throw new Exception(ex.Message);
             }
+
+
         }
+
+        [HttpDelete("/Eliminar/pasantias/{id}")]
+        public async Task<IActionResult> Eliminar(int id)
+        {
+            Console.WriteLine($"ID recibido: {id}");
+            var pasantia = await _db.Pasantias.FindAsync(id);
+            if (pasantia == null)
+                return NotFound(new { success = false, mensaje = "La pasantía no existe." });
+
+            _db.Pasantias.Remove(pasantia);
+            await _db.SaveChangesAsync();
+
+
+            return Ok(new { success = true, mensaje = "Pasantía eliminada correctamente." });
+        }
+
+        [HttpPut("/Editar/pasantias/{id}")]
+        public IActionResult Editar(int id, [FromBody] PasantiaDto.Pasantias dto)
+        {
+            // Buscar la pasantía en la base de datos
+            var pasantia = _db.Pasantias.Find(id);
+            if (pasantia == null)
+            {
+                return NotFound("No se encontró la pasantía");
+            }
+
+            // Actualizar los campos
+            pasantia.Titulo = dto.titulo;
+            pasantia.Descripcion = dto.descripcion;
+            pasantia.RequiredCareers = dto.RequiredCareersCsv;
+
+            // Guardar cambios
+            _db.SaveChanges();
+
+            return Ok("Pasantía actualizada correctamente");
+        }
+
 
     }
 }
+
