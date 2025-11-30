@@ -1,5 +1,81 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@{
+    ViewData["Title"] = "Postulaciones Recibidas";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4 text-primary">Postulaciones Recibidas</h2>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <table id="tablaPostulaciones" class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Estudiante</th>
+                        <th>Pasantía</th>
+                        <th>Fecha Aplicación</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // Obtener el ID de la empresa de alguna forma segura o filtrar en el backend
+            // Aquí asumimos que el endpoint /api/postulaciones filtra por la empresa en sesión
+
+            $('#tablaPostulaciones').DataTable({
+                ajax: {
+                    url: '/api/postulaciones',
+                    dataSrc: ''
+                },
+                columns: [
+                    { data: 'estudiante' }, // camelCase del JSON
+                    { data: 'pasantia' },
+                    {
+                        data: 'fechaAplicacion',
+                        render: function(data) {
+                            return moment(data).format('DD/MM/YYYY HH:mm');
+                        }
+                    },
+                    {
+                        data: 'estado',
+                        render: function(data) {
+                            let color = 'secondary';
+                            if(data === 'Accepted') color = 'success';
+                            if(data === 'InReview') color = 'warning';
+                            if(data === 'Rejected') color = 'danger';
+                            return `<span class="badge bg-${color}">${data}</span>`;
+                        }
+                    },
+                    {
+                        data: null,
+                        render: function (data) {
+                            return `
+                                <button class="btn btn-sm btn-outline-primary" title="Ver CV">
+                                    <i class="bi bi-file-earmark-person"></i> CV
+                                </button>
+                                <button class="btn btn-sm btn-success" title="Aceptar">
+                                    <i class="bi bi-check-lg"></i>
+                                </button>
+                            `;
+                        }
+                    }
+                ],
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
+                }
+            });
+        });
+    </script>
 }

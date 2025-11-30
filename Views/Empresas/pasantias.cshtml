@@ -1,5 +1,4 @@
 ﻿@using UAMPass.Models.Dto
-@* CORRECCIÓN: Usamos el nombre con Mayúscula *@
 @model PasantiaDto.CreatePasantia
 @{
     ViewData["Title"] = "Gestión de Pasantías";
@@ -21,16 +20,15 @@
             <th>Acciones</th>
         </tr>
     </thead>
-    <tbody>
-    </tbody>
+    <tbody></tbody>
 </table>
 
 <div class="modal fade" id="crearModal" tabindex="-1" aria-labelledby="crearModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="crearModalLabel">Crear Nueva Pasantía</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                <h5 class="modal-title">Crear Nueva Pasantía</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <form id="formCrear">
@@ -51,8 +49,9 @@
                             <option value="Sistemas">Sistemas</option>
                             <option value="Telecomunicaciones">Telecomunicaciones</option>
                             <option value="Arquitectura">Arquitectura</option>
+                            <option value="Industrial">Industrial</option>
                         </select>
-                        <small class="text-muted">Puedes seleccionar varias carreras.</small>
+                        <small class="text-muted">Mantén presionado Ctrl para seleccionar varias.</small>
                     </div>
                 </form>
             </div>
@@ -70,43 +69,34 @@
 
     <script>
         $(document).ready(function () {
-            // Inicializar DataTable con AJAX
             $('#tablaPasantias').DataTable({
                 ajax: {
-                    url: '/api/pasantias', // Endpoint del controlador
-                    dataSrc: ''            // El JSON es un array directo
+                    url: '/api/pasantias',
+                    dataSrc: ''
                 },
-                // NOTA: .NET suele devolver JSON en camelCase (minúscula) por defecto.
-                // Si la tabla no carga datos, intenta cambiar 'Titulo' a 'titulo' aquí abajo.
                 columns: [
+                    // .NET devuelve JSON en camelCase (minúscula inicial) por defecto
                     { data: 'titulo' },
                     { data: 'descripcion' },
                     { data: 'carrerasPermitidas' },
                     {
                         data: null,
                         render: function (data, type, row) {
-                            return `
-                                <button class="btn btn-sm btn-warning">Editar</button>
-                                <button class="btn btn-sm btn-danger">Eliminar</button>
-                            `;
+                            return `<button class="btn btn-sm btn-danger">Eliminar</button>`;
                         }
                     }
-                ],
-                language: {
-                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
-                }
+                ]
             });
 
-            // Evento submit del modal
             $('#formCrear').on('submit', function (e) {
                 e.preventDefault();
 
-                // CORRECCIÓN: Las propiedades deben coincidir con el DTO (PascalCase)
+                // Objeto debe coincidir con PasantiaDto.CreatePasantia (PascalCase)
                 const createPasantia = {
                     Titulo: $('#Nombre').val(),
                     Descripcion: $('#Descripcion').val(),
-                    RequiredCareersCsv: $('#Carreras').val(),
-                    Empresa: 1 // Asegúrate de que este ID exista o venga de la sesión
+                    RequiredCareersCsv: $('#Carreras').val(), // Esto envía un array de strings
+                    Empresa: 0 // El ID se toma de la Sesión en el servidor, enviamos 0
                 };
 
                 $.ajax({
@@ -117,10 +107,10 @@
                     success: function () {
                         $('#crearModal').modal('hide');
                         $('#formCrear')[0].reset();
-                        $('#tablaPasantias').DataTable().ajax.reload(); // refrescar tabla
+                        $('#tablaPasantias').DataTable().ajax.reload();
                     },
-                    error: function () {
-                        alert('Error al guardar la pasantía');
+                    error: function (xhr) {
+                        alert('Error: ' + xhr.responseText);
                     }
                 });
             });

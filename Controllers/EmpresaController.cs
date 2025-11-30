@@ -9,10 +9,11 @@ using Microsoft.AspNetCore.Http;
 
 namespace UAMPass.Controllers
 {
-    public class EmpresaController : Controller
+    // CORREGIDO: "EmpresasController" (Plural) para coincidir con asp-controller="Empresas"
+    public class EmpresasController : Controller
     {
         private readonly ApplicationDbContext _db;
-        public EmpresaController(ApplicationDbContext db)
+        public EmpresasController(ApplicationDbContext db)
         {
             _db = db;
         }
@@ -25,11 +26,10 @@ namespace UAMPass.Controllers
             return View();
         }
 
-        //get: Empresa/login
+        // GET: /Empresas/Login
         [HttpGet]
         public IActionResult Login()
         {
-            // CORREGIDO: LoginEmpresaDTO (Mayúscula)
             return View(new LoginEmpresaDTO());
         }
 
@@ -41,65 +41,119 @@ namespace UAMPass.Controllers
                 return RedirectToAction("Login", "Empresas");
             return View();
         }
+
         [HttpGet]
         public IActionResult pasantias()
         {
+            // Validar sesión también aquí por seguridad
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString("empresaID")))
+                return RedirectToAction("Login");
+
             return View();
         }
-        //post: Empresa/login
+
+        // POST: /Empresas/Login
         [HttpPost]
-        public async Task<IActionResult> Login(LoginEmpresaDTO dto) // CORREGIDO: LoginEmpresaDTO
+        public async Task<IActionResult> Login(LoginEmpresaDTO dto)
         {
             try
             {
-
-                if (dto.ContactoEmail == string.Empty)
+                if (string.IsNullOrEmpty(dto.ContactoEmail))
                     throw new Exception("El correo no puede estar vacío.");
-                if (dto.Contrasena == string.Empty)
+                if (string.IsNullOrEmpty(dto.Contrasena))
                     throw new Exception("La contraseña no puede estar vacía.");
+
                 using var sha256 = SHA256.Create();
                 var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(dto.Contrasena ?? string.Empty));
                 dto.Contrasena = Convert.ToBase64String(bytes);
-                // Buscar empresas por correo
-                var empresa = await _db.Empresas.Where(w => w.ContactoEmail == dto.ContactoEmail && w.ContrasenaHash == dto.Contrasena
-                )
-                    .FirstOrDefaultAsync();
+
+                var empresa = await _db.Empresas
+                    .FirstOrDefaultAsync(w => w.ContactoEmail == dto.ContactoEmail && w.ContrasenaHash == dto.Contrasena);
 
                 if (empresa != null)
                 {
-                    // Autenticación exitosa
                     HttpContext.Session.SetString("empresaID", empresa.Id.ToString());
                     return RedirectToAction("portalEmpresa", "Empresas");
                 }
                 else
                 {
-                    // Autenticación fallida
                     ModelState.AddModelError(string.Empty, "Correo o contraseña incorrectos.");
                     return View(dto);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                // Es mejor mostrar el error en la vista que lanzar una excepción cruda
+                ModelState.AddModelError("", ex.Message);
+                return View(dto);
             }
-
         }
 
         [HttpPost]
         public IActionResult logout()
         {
+            HttpContext.Session.Remove("empresaID");
+            HttpContext.Session.Clear();
+            return RedirectToAction("Index", "Home");
+        }
+
+        // GET: /Empresas/Register
+        [HttpGet]
+        public IActionResult Register()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Register(CreateEmpresa obj)
+        {
             try
             {
-                HttpContext.Session.Remove("empresaID");
-                HttpContext.Session.Clear();
-                return RedirectToAction("Index", "Home");
-            }
-            catch (Exception)
-            {
+                if (!ModelState.IsValid) return View(obj);
 
-                throw;
+                var data = await _db.Empresas.FirstOrDefaultAsync(w => w.ContactoEmail == obj.ContactoEmail);
+                if (data != null)
+                {
+                    ModelState.AddModelError("ContactoEmail", "La empresa ya existe");
+                    return View(obj);
+                }
+
+                Empresa empresa = new Empresa
+                {
+                    Nombre = obj.Nombre,
+                    ContactoEmail = obj.ContactoEmail,
+                    SitioWeb = obj.SitioWeb,
+                    Direccion = obj.Direccion
+                };
+
+                using var sha256 = SHA256.Create();
+                var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(obj.ContrasenaHash ?? string.Empty));
+                empresa.ContrasenaHash = Convert.ToBase64String(bytes);
+
+                await _db.Empresas.AddAsync(empresa);
+                await _db.SaveChangesAsync();
+
+                return RedirectToAction("Login", "Empresas");
             }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return View(obj);
+            }
+        }
+
+        [HttpGet]
+        [Route("api/empresas")]
+        public async Task<IActionResult> getEmpresas()
+        {
+            var data = await _db.Empresas
+                .Select(s => new ListEmpresa
+                {
+                    Id = s.Id,
+                    Nombre = s.Nombre
+                }).ToListAsync();
+
+            return Ok(data);
         }
     }
 }
