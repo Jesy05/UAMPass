@@ -5,9 +5,10 @@ using System.Text;
 using UAMPass.Models;
 using System;
 using System.Threading.Tasks;
-using UAMPass.Models.Dto; 
+using UAMPass.Models.Dto;
+using Microsoft.AspNetCore.Http; // Necesario para Session
 
-namespace UAMPass.Controllers.Admin
+namespace UAMPass.Controllers
 {
     public class AdminAuthController : Controller
     {
@@ -18,59 +19,56 @@ namespace UAMPass.Controllers.Admin
             _context = context;
         }
 
-        // GET: /AdminAuth/Landing (Muestra la página de opciones: Iniciar Sesión / Registrarse)
+        // GET: /AdminAuth/Landing
         public IActionResult Landing()
         {
-            // Apunta a la vista Landing.cshtml que contiene los dos botones
             return View();
         }
 
-        // GET: /AdminAuth/Login (Muestra el formulario de Login)
+        // GET: /AdminAuth/Login
         [HttpGet]
         public IActionResult Login()
         {
-            return View();
+            return View(new LoginAdministradorDTO());
         }
 
-        // POST: /AdminAuth/Login (Procesa el Login)
+        // POST: /AdminAuth/Login
         [HttpPost]
-        //  Recibe el DTO (que contiene las reglas [Required])
         public async Task<IActionResult> Login(LoginAdministradorDTO model)
         {
-            // Si el ModelState NO es válido (campos vacíos), regresa la vista para mostrar los errores del DTO.
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
-            //  Usar model.Usuario en lugar de la variable 'usuario'
+            // 1. Buscamos el usuario (Ignorando mayúsculas/minúsculas para robustez)
             var admin = await _context.Administradores
-                .FirstOrDefaultAsync(a => a.Usuario == model.Usuario);
+                .FirstOrDefaultAsync(a => a.Usuario.ToLower() == model.Usuario.ToLower());
 
             if (admin == null)
             {
                 ViewBag.Error = "Credenciales incorrectas.";
-                return View(model); // Retorna el modelo para que la vista recargue los campos
+                return View(model);
             }
 
-            //  Usar model.Contrasena en lugar de la variable 'contrasena'
-            var hashIngresado = Hash(model.Contrasena);
+            // 2. Verificamos la contraseña hasheada
+            var hashIngresado = HashPassword(model.Contrasena);
 
-            // Bloque donde verifica si la contraseña es incorrecta
             if (admin.ContrasenaHash != hashIngresado)
             {
                 ViewBag.Error = "Credenciales incorrectas.";
-                return View(model); // Retorna el modelo
+                return View(model);
             }
 
-            // LÓGICA DE REDIRECCIÓN EXITOSA
+            // 3. SESIÓN: Guardamos la identidad del administrador
             HttpContext.Session.SetString("AdminId", admin.Id.ToString());
             HttpContext.Session.SetString("AdminUser", admin.Usuario);
+            HttpContext.Session.SetString("AdminNombre", admin.Nombre);
 
-
-            return RedirectToAction("Index", "Administradores");
+            // 4. REDIRECCIÓN: Al Dashboard de Admin
+            // "Index" es la vista principal, "PortalAdmin" es tu controlador de administración
+            return RedirectToAction("Index", "PortalAdmin");
         }
-
 
         // GET: /AdminAuth/Registro
         [HttpGet]
@@ -79,15 +77,52 @@ namespace UAMPass.Controllers.Admin
             return View();
         }
 
-        // POST: /AdminAuth/Registro 
+        // POST: /AdminAuth/Registro
         [HttpPost]
-        public IActionResult Registro(string usuario, string contrasena)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Registro(Administrador model)
         {
-            // Redirige al Login o a donde necesites después de un intento de registro
+            // Evitar error de validación por el campo Hash vacío (lo calculamos aquí)
+            ModelState.Remove("ContrasenaHash");
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            // Validar usuario duplicado
+            if (await _context.Administradores.AnyAsync(a => a.Usuario.ToLower() == model.Usuario.ToLower()))
+            {
+                ModelState.AddModelError("Usuario", "Este usuario ya está en uso.");
+                return View(model);
+            }
+
+            // Validar correo duplicado
+            if (await _context.Administradores.AnyAsync(a => a.Correo.ToLower() == model.Correo.ToLower()))
+            {
+                ModelState.AddModelError("Correo", "Este correo ya está registrado.");
+                return View(model);
+            }
+
+            // Hashear contraseña y guardar
+            model.ContrasenaHash = HashPassword(model.ContrasenaPlano);
+
+            _context.Add(model);
+            await _context.SaveChangesAsync();
+
+            // Redirigir al Login tras registro exitoso
             return RedirectToAction("Login");
         }
 
-        // GET: /AdminAuth/ForgotPassword (Recuperación)
+        // Logout
+        [HttpPost]
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("Login");
+        }
+
+        // GET: /AdminAuth/ForgotPassword
         [HttpGet]
         public IActionResult ForgotPassword()
         {
@@ -95,10 +130,9 @@ namespace UAMPass.Controllers.Admin
         }
 
         [HttpPost]
-        public IActionResult ForgotPassword(string usuario)
+        public async Task<IActionResult> ForgotPassword(string usuario)
         {
-            // buscar admin por usuario
-            var admin = _context.Administradores.FirstOrDefault(a => a.Usuario == usuario);
+            var admin = await _context.Administradores.FirstOrDefaultAsync(a => a.Usuario == usuario);
 
             if (admin == null)
             {
@@ -106,16 +140,14 @@ namespace UAMPass.Controllers.Admin
                 return View();
             }
 
-            // modo demo: sin enviar correo aún
-            ViewBag.Mensaje = "Contacta a soporte para restablecer tu contraseña. (Modo demo)";
+            ViewBag.Mensaje = "Contacta a soporte técnico para restablecer tu contraseña. (Modo Demo)";
             return View();
         }
 
-        // UTILIDAD PARA HASHEAR CONTRASEÑA
-        private string Hash(string input)
+        // Utilidad Hash (SHA256)
+        private string HashPassword(string input)
         {
-            using var sha256 = SHA256.Create();
-            var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(input ?? string.Empty));
+            var bytes = SHA256.HashData(Encoding.UTF8.GetBytes(input ?? string.Empty));
             return Convert.ToBase64String(bytes);
         }
     }
