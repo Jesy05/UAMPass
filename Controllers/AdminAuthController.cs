@@ -110,8 +110,12 @@ namespace UAMPass.Controllers
             _context.Add(model);
             await _context.SaveChangesAsync();
 
+            HttpContext.Session.SetString("AdminId", model.Id.ToString());
+            HttpContext.Session.SetString("AdminUser", model.Usuario);
+            HttpContext.Session.SetString("AdminNombre", model.Nombre);
+
             // Redirigir al Login tras registro exitoso
-            return RedirectToAction("Login");
+            return RedirectToAction("Profile", "Administradores");
         }
 
         // Logout
