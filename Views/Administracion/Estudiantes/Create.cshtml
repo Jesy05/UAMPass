@@ -4,49 +4,145 @@
     ViewData["Title"] = "Nuevo Estudiante";
 }
 
-<h2>Nuevo Estudiante</h2>
+<div class="container mt-4">
+    <div class="card shadow-sm border-0" style="border-radius: 15px;">
+        <div class="card-header bg-primary text-white" style="border-radius: 15px 15px 0 0;">
+            <h4 class="mb-0 fw-bold">Registro de Estudiante</h4>
+        </div>
+        <div class="card-body p-4">
 
-<form asp-action="Create" method="post">
-    <div class="mb-3">
-        <label asp-for="Nombre" class="form-label"></label>
-        <input asp-for="Nombre" class="form-control" />
-        <span asp-validation-for="Nombre" class="text-danger"></span>
+            <form asp-action="Create" method="post">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="Nombre" class="form-label fw-bold">Nombre Completo</label>
+                            <input asp-for="Nombre" class="form-control" placeholder="Ej: Ana García" />
+                            <span asp-validation-for="Nombre" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Correo" class="form-label fw-bold">Correo Institucional</label>
+                            <input asp-for="Correo" class="form-control" placeholder="nombre@uamv.edu.ni" />
+                            <span asp-validation-for="Correo" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="CIF" class="form-label fw-bold">CIF</label>
+                            <input asp-for="CIF" class="form-control" placeholder="Ej: 23010380" />
+                            <span asp-validation-for="CIF" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <div class="mb-3">
+                            <label asp-for="Facultad" class="form-label fw-bold">Facultad</label>
+                            <select asp-for="Facultad" id="SelectFacultad" class="form-select" required>
+                                <option value="">-- Selecciona una Facultad --</option>
+                            </select>
+                            <span asp-validation-for="Facultad" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Carrera</label>
+                            <select name="Carreras" id="SelectCarrera" class="form-select" disabled required>
+                                <option value="">-- Esperando Facultad --</option>
+                            </select>
+                            <small class="text-muted">Si cursas doble titulación, mantén presionada la tecla Ctrl para seleccionar ambas.</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ContrasenaPlano" class="form-label fw-bold">Contraseña</label>
+                            <input asp-for="ContrasenaPlano" type="password" class="form-control" placeholder="********" />
+                            <span asp-validation-for="ContrasenaPlano" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
+                    @* CORREGIDO: Ahora lleva al Home (Inicio) *@
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-secondary me-md-2">Cancelar</a>
+
+                    <button type="submit" class="btn btn-success px-5">
+                        <i class="bi bi-check-circle-fill"></i> Guardar
+                    </button>
+                </div>
+            </form>
+
+        </div>
     </div>
-
-    <div class="mb-3">
-        <label asp-for="Correo" class="form-label"></label>
-        <input asp-for="Correo" class="form-control" />
-        <span asp-validation-for="Correo" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Facultad" class="form-label"></label>
-        <input asp-for="Facultad" class="form-control" />
-        <span asp-validation-for="Facultad" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="CareersCsv" class="form-label">Carreras (separadas por coma)</label>
-        <input asp-for="CareersCsv" class="form-control" />
-        <span asp-validation-for="CareersCsv" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="CIF" class="form-label"></label>
-        <input asp-for="CIF" class="form-control" />
-        <span asp-validation-for="CIF" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="ContrasenaPlano" class="form-label">Contraseña</label>
-        <input asp-for="ContrasenaPlano" class="form-control" />
-        <span asp-validation-for="ContrasenaPlano" class="text-danger"></span>
-    </div>
-
-    <button class="btn btn-success">Guardar</button>
-    
-</form>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        // ==========================================
+        //  BASE DE DATOS DE CARRERAS UAM
+        // ==========================================
+        const uamData = {
+            "Ingeniería y Arquitectura": [
+                "Ingeniería en Sistemas de Información",
+                "Ingeniería Industrial",
+                "Ingeniería Civil",
+                "Arquitectura"
+            ],
+            "Ciencias Administrativas y Económicas": [
+                "Administración de Empresas",
+                "Contabilidad y Finanzas",
+                "Economía Empresarial",
+                "Negocios Internacionales",
+                "Marketing"
+            ],
+            "Marketing, Diseño y Ciencias de la Comunicación": [
+                "Diseño y Comunicación Visual",
+                "Comunicación y Relaciones Públicas",
+                "Marketing y Diseño"
+            ],
+            "Ciencias Jurídicas, Humanidades y Relaciones Internacionales": [
+                "Derecho",
+                "Diplomacia y Relaciones Internacionales"
+            ],
+            "Ciencias Médicas": [
+                "Medicina",
+                "Psicología"
+            ],
+            "Odontología": [
+                "Odontología"
+            ]
+        };
+
+        $(document).ready(function () {
+            const $facultad = $('#SelectFacultad');
+            const $carrera = $('#SelectCarrera');
+
+            // 1. Llenar el Select de Facultad al cargar la página
+            $.each(uamData, function (key, value) {
+                $facultad.append(new Option(key, key));
+            });
+
+            // 2. Detectar cambio en Facultad
+            $facultad.change(function () {
+                const seleccion = $(this).val();
+
+                // Limpiar carreras anteriores
+                $carrera.empty();
+
+                if (seleccion && uamData[seleccion]) {
+                    // Si hay selección válida, habilitar y llenar carreras
+                    $carrera.prop('disabled', false);
+
+                    $.each(uamData[seleccion], function (index, value) {
+                        $carrera.append(new Option(value, value));
+                    });
+                } else {
+                    // Si no hay selección (o eligió "Seleccionar..."), bloquear y reiniciar
+                    $carrera.prop('disabled', true);
+                    $carrera.append(new Option("-- Esperando Facultad --", ""));
+                }
+            });
+        });
+    </script>
 }
