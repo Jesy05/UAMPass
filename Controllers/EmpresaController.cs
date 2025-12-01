@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace UAMPass.Controllers
 {
+    // CORREGIDO: "EmpresasController" (Plural) para coincidir con asp-controller="Empresas"
     public class EmpresasController : Controller
     {
         private readonly ApplicationDbContext _db;
@@ -25,11 +26,11 @@ namespace UAMPass.Controllers
             return View();
         }
 
-        //get: Empresa/login
+        // GET: /Empresas/Login
         [HttpGet]
         public IActionResult Login()
         {
-            return View(new loginEmpresaDTO());
+            return View(new LoginEmpresaDTO());
         }
 
         [HttpGet]
@@ -40,9 +41,14 @@ namespace UAMPass.Controllers
                 return RedirectToAction("Login", "Empresas");
             return View();
         }
+
         [HttpGet]
         public IActionResult pasantias()
         {
+            // Validar sesión también aquí por seguridad
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString("empresaID")))
+                return RedirectToAction("Login");
+
             return View();
         }
 
@@ -50,58 +56,49 @@ namespace UAMPass.Controllers
         {
             return View();
         }
-        //post: Empresa/login
+
+        // POST: /Empresas/Login
+
         [HttpPost]
-        public async Task<IActionResult> Login(loginEmpresaDTO dto)
+        public async Task<IActionResult> Login(LoginEmpresaDTO dto)
         {
             try
             {
                 using var sha256 = SHA256.Create();
                 var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(dto.Contrasena ?? string.Empty));
                 dto.Contrasena = Convert.ToBase64String(bytes);
-                // Buscar empresas por correo
-                var empresa = await _db.Empresas.Where(w => w.ContactoEmail == dto.ContactoEmail && w.ContrasenaHash == dto.Contrasena
-                )
-                    .FirstOrDefaultAsync();
+
+                var empresa = await _db.Empresas
+                    .FirstOrDefaultAsync(w => w.ContactoEmail == dto.ContactoEmail && w.ContrasenaHash == dto.Contrasena);
 
                 if (empresa != null)
                 {
-                    // Autenticación exitosa
                     HttpContext.Session.SetString("empresaID", empresa.Id.ToString());
                     return RedirectToAction("portalEmpresa", "Empresas");
                 }
                 else
                 {
-                    // Autenticación fallida
                     ModelState.AddModelError(string.Empty, "Correo o contraseña incorrectos.");
                     return View(dto);
                 }
             }
             catch (Exception ex)
             {
+                ModelState.AddModelError("", ex.Message);
+                return View(dto);
 
-                throw new Exception(ex.Message);
             }
-
         }
 
         [HttpPost]
         public IActionResult logout()
         {
-            try
-            {
-                HttpContext.Session.Remove("empresaID");
-                HttpContext.Session.Clear();
-                return RedirectToAction("Index", "Home");
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
+            HttpContext.Session.Remove("empresaID");
+            HttpContext.Session.Clear();
+            return RedirectToAction("Index", "Home");
         }
 
-        // GET: /empresa/Register
+        // GET: /Empresas/Register
         [HttpGet]
         public IActionResult Register()
         {
@@ -109,21 +106,27 @@ namespace UAMPass.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register(createEmpresa obj)
+        public async Task<IActionResult> Register(CreateEmpresa obj)
         {
             try
             {
-                Empresa empresa = new Empresa();
+                if (!ModelState.IsValid) return View(obj);
 
-                var data = await _db.Empresas.Where(w => w.ContactoEmail == obj.ContactoEmail).FirstOrDefaultAsync();
-
+                var data = await _db.Empresas.FirstOrDefaultAsync(w => w.ContactoEmail == obj.ContactoEmail);
                 if (data != null)
-                    throw new Exception("La empresa ya existe");
+                {
+                    ModelState.AddModelError("ContactoEmail", "La empresa ya existe");
+                    return View(obj);
+                }
 
-                empresa.Nombre = obj.Nombre;
-                empresa.ContactoEmail = obj.ContactoEmail;
-                empresa.SitioWeb = obj.SitioWeb;
-                empresa.Direccion = obj.Direccion;
+                Empresa empresa = new Empresa
+                {
+                    Nombre = obj.Nombre,
+                    ContactoEmail = obj.ContactoEmail,
+                    SitioWeb = obj.SitioWeb,
+                    Direccion = obj.Direccion
+                };
+
                 using var sha256 = SHA256.Create();
                 var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(obj.ContrasenaHash ?? string.Empty));
                 empresa.ContrasenaHash = Convert.ToBase64String(bytes);
@@ -135,8 +138,10 @@ namespace UAMPass.Controllers
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError(string.Empty, ex.Message);
-                return View();
+
+                ModelState.AddModelError("", ex.Message);
+                return View(obj);
+
             }
         }
 
@@ -144,46 +149,14 @@ namespace UAMPass.Controllers
         [Route("api/empresas")]
         public async Task<IActionResult> getEmpresas()
         {
-            try
-            {
-                var data = await _db.Empresas
-                    .Select(s => new listEmpresa
-                    {
-                        Id = s.Id,
-                        Nombre = s.Nombre
-                    }).ToListAsync();
+            var data = await _db.Empresas
+                .Select(s => new ListEmpresa
+                {
+                    Id = s.Id,
+                    Nombre = s.Nombre
+                }).ToListAsync();
 
-                return Ok(data);
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-        }
-
-        [HttpGet]
-        public IActionResult ForgotPassword()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public IActionResult ForgotPassword(string usuario)
-        {
-            // buscar admin por usuario
-            var empresa = _db.Empresas.FirstOrDefault(a => a.ContactoEmail == usuario);
-
-            if (empresa == null)
-            {
-                ViewBag.Mensaje = "No existe una empresa con ese usuario.";
-                return View();
-            }
-
-            // modo demo: sin enviar correo aún
-            ViewBag.Mensaje = "Contacta a soporte para restablecer tu contraseña. (Modo demo)";
-            return View();
+            return Ok(data);
         }
     }
-
 }

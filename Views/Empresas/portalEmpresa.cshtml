@@ -3,46 +3,27 @@
 }
 
 <div class="d-flex flex-column align-items-center justify-content-center min-vh-100 text-center" style="background-color: #f9f9f9;">
+    <div class="card shadow-lg border-0" style="width: 420px; border-radius: 16px;">
 
-    <div class="card shadow p-4 border-0" style="max-width: 900px; border-radius: 40px;">
-
-        <h1 class="fw-bold mb-2" style="color: #04a7ad;">Bienvenido a UAMPass para Empresas</h1>
-        <p class="text-muted mb-4">
-            ¿Qué deseas hacer hoy?
-        </p>
-
-        <div class="row justify-content-center g-8">
-
-
+        <div class="card-body p-4">
+            <h3 class="text-center fw-bold text-primary mb-3">Bienvenido a UAMPass Empresas</h3>
+            <p class="text-center text-muted mb-4">¿Qué desea hacer hoy?.</p>
 
             <!-- Pasantías -->
-            <div class="col-md-4">
-                <div class="card shadow border-0" style="border-radius: 20px; overflow: hidden;">
-                    <div class="card-body text-center">
+            <div class="d-grid gap-3">
                         <a asp-controller="Empresas" asp-action="pasantias"
                            class="btn btn-lg w-100 text-white"
                            style="background-color: #04a7ad; border-radius: 12px;">
                             Pasantías
                         </a>
-                    </div>
-                </div>
-            </div>
 
             <!-- Postulaciones -->
-            <div class="col-md-4">
-                <div class="card shadow border-0" style="border-radius: 20px; overflow: hidden;">
-                    <div class="card-body text-center">
-                        <a asp-controller="Empresas" asp-action="postulaciones"
-                           class="btn btn-lg w-100"
-                           style="border: 2px solid #04a7ad; color: #04a7ad; border-radius: 12px;">
-                            Postulaciones
-                        </a>
-                    </div>
-                </div>
+                <a asp-controller="Empresas" asp-action="postulaciones"
+                    class="btn btn-lg w-100"
+                    style="border: 2px solid #04a7ad; color: #04a7ad; border-radius: 12px;">
+                    Postulaciones
+                </a>
             </div>
-
-            
-
         </div>
 
     </div>

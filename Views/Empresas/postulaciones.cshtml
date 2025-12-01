@@ -13,6 +13,7 @@
         <tr>
             <th>ID</th>
             <th>Estudiante</th>
+            <th>CV</th>
             <th>Pasantia</th>
             <th>Fecha Aplicacion</th>
             <th>Estado</th>
@@ -40,7 +41,14 @@
                 },
                 "columns": [
                     { "data": "id", "visible": false },
-                    { "data": "estudiante" },
+                    { "data": "estudiante" },       
+                    {data: "cv",
+                        render: function (data) {
+                            return data
+                                ? `<a href="${data}" target="_blank">Abrir CV</a>`
+                                : "Sin CV";
+                        }
+                    },
                     { "data": "pasantia" },
                     { "data": "fechaAplicacion" },
                     { "data": "estado" },
@@ -52,7 +60,7 @@
                                 <button class="btn btn-success btn-aceptar" data-id="${row.id}">Aceptar</button>
                                 <button class="btn btn-warning btn-completa" data-id="${row.id}">Completada</button>
                                 <button class="btn btn-danger btn-rechazar" data-id="${row.id}">Rechazar</button>
-                                
+
                             `;
                         }
                     }
@@ -65,10 +73,10 @@
 
         $(document).on('click', '.btn-entrevista', function () {
             var id = $(this).data('id');
-            var estado = "Interview"; 
+            var estado = "Interview";
 
             $.ajax({
-                url: '/Postulaciones/CambiarEstado',  
+                url: '/Postulaciones/CambiarEstado',
                 type: 'PUT',
                 contentType: 'application/json',
                 data: JSON.stringify({ id: id, estado: estado }),
@@ -83,7 +91,7 @@
             });
         });
 
-                
+
         $(document).on('click', '.btn-aceptar', function () {
             var id = $(this).data('id');
             var estado = "Accepted";
@@ -103,7 +111,7 @@
                 }
             });
         });
-        
+
         $(document).on('click', '.btn-rechazar', function () {
             var id = $(this).data('id');
             var estado = "Rejected";

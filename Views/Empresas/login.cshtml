@@ -1,5 +1,6 @@
 ﻿@using UAMPass.Models.Dto
-@model loginEmpresaDTO
+@* CORREGIDO: LoginEmpresaDTO *@
+@model LoginEmpresaDTO
 @{
     ViewData["Title"] = "Iniciar Sesión";
 }
@@ -19,35 +20,31 @@
                 </div>
             }
             <form asp-action="Login" method="post"
-            asp-controller="Empresas">
-                <!-- Correo -->
+                  asp-controller="Empresas">
                 <div class="mb-3">
-                    <label class="form-label fw-semibold">Correo </label> 
+                    <label class="form-label fw-semibold">Correo </label>
                     <input asp-for="ContactoEmail" class="form-control" placeholder="Ingresa tu correo" />
                     <span asp-validation-for="ContactoEmail" class="text-danger"></span>
                 </div>
 
-                <!-- Contraseña -->
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Contraseña</label>
                     <input asp-for="Contrasena" class="form-control" type="password" placeholder="Ingresa tu contraseña" />
                     <span asp-validation-for="Contrasena" class="text-danger"></span>
                 </div>
 
-
                 <!-- Botón -->
                 <button type="submit" class="btn w-100 py-2 fw-bold text-white" style="background-color: #04a7ad ">
                     Iniciar Sesión
                 </button>
 
-                <!-- Links -->
                 <div class="text-center mt-3">
                     <a asp-action="Recuperar" class="text-primary fw-semibold" style="text-decoration:none;">
                         ¿Olvidaste tu contraseña?
                     </a>
                 </div>
             </form>
-          
+
         </div>
     </div>
 </div>

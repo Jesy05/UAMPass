@@ -25,13 +25,13 @@ namespace UAMPass.Controllers
             try
             {
                 var data = await _db.Pasantias.
-                    Select(s => new PasantiaDto.listPasantia
+                    Select(s => new PasantiaDto.ListPasantia // CORREGIDO: ListPasantia (Mayúscula)
                     {
                         Id = s.Id,
-                        titulo = s.Titulo,
-                        descripcion = s.Descripcion,
-                        empresa = s.EmpresaId,
-                        carrerasPermitidas = string.Join(", ", s.RequiredCareers)
+                        Titulo = s.Titulo,
+                        Descripcion = s.Descripcion,
+                        Empresa = s.EmpresaId,                        
+                        CarrerasPermitidas = string.Join(", ", s.RequiredCareers)
                     }).
                     ToListAsync();
                 return Ok(data);
@@ -44,21 +44,22 @@ namespace UAMPass.Controllers
 
         [HttpPost]
         [Route("api/pasantias")]
-        public async Task<IActionResult> postPasantias([FromBody]PasantiaDto.createPasantia obj)
+        public async Task<IActionResult> postPasantias([FromBody] PasantiaDto.CreatePasantia obj) // CORREGIDO: CreatePasantia
         {
             try
             {
                 Pasantia pasantia = new Pasantia();
 
+                // CORREGIDO: obj.Titulo y obj.Empresa (Mayúsculas)
                 var data = await _db.Pasantias.
-                    Where(w => w.Titulo == obj.titulo && w.EmpresaId == obj.empresa)
+                    Where(w => w.Titulo == obj.Titulo && w.EmpresaId == obj.Empresa)
                     .FirstOrDefaultAsync();
 
                 if (data != null)
                     throw new Exception("Pasantía duplicada para la misma empresa");
 
-                pasantia.Titulo = obj.titulo;
-                pasantia.Descripcion = obj.descripcion;
+                pasantia.Titulo = obj.Titulo;
+                pasantia.Descripcion = obj.Descripcion;
                 pasantia.EmpresaId = Convert.ToInt32(HttpContext.Session.GetString("empresaID"));
                 pasantia.RequiredCareersCsv = string.Join(", ", obj.RequiredCareersCsv);
 
@@ -101,8 +102,8 @@ namespace UAMPass.Controllers
             }
 
             // Actualizar los campos
-            pasantia.Titulo = dto.titulo;
-            pasantia.Descripcion = dto.descripcion;
+            pasantia.Titulo = dto.Titulo;
+            pasantia.Descripcion = dto.Descripcion;
             pasantia.RequiredCareers = dto.RequiredCareersCsv;
 
             // Guardar cambios
@@ -114,4 +115,5 @@ namespace UAMPass.Controllers
 
     }
 }
+
 

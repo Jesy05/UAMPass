@@ -104,7 +104,7 @@
                         <i class="bi bi-file-earmark-arrow-down-fill me-1"></i> Abrir CV
                     </a>
 
-                    <a asp-controller="Estudiantes" asp-action="SubirCV" asp-route-id="@Model?.Id"
+                    <a asp-controller="PortalEstudiante" asp-action="SubirCV" asp-route-id="@Model?.Id"
                        class="btn btn-primary ms-2"
                        style="background-color:@mainColor; border-color:@mainColor; --bs-btn-hover-bg:@accentColor;">
                         <i class="bi bi-cloud-arrow-up-fill me-1"></i> Actualizar CV
@@ -114,7 +114,8 @@
                 {
                     <p class="text-muted">No has subido un CV todavía. ¡Sube tu CV para ser visible!</p>
 
-                    <a asp-controller="Estudiantes" asp-action="SubirCV" asp-route-id="@Model?.Id"
+                    <!-- CORREGIDO: ANTES DECÍA asp-controller="Estudiantes" -->
+                    <a asp-controller="PortalEstudiante" asp-action="SubirCV" asp-route-id="@Model?.Id"
                        class="btn btn-primary"
                        style="background-color:@mainColor; border-color:@mainColor; --bs-btn-hover-bg:@accentColor;">
                         <i class="bi bi-cloud-arrow-up-fill me-1"></i> Subir CV
@@ -128,7 +129,7 @@
                         <i class="bi bi-box-arrow-right me-1"></i> Cerrar sesión
                     </button>
                 </form>
-            </div>            
+            </div>
         </div>
 
     </div>

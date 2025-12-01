@@ -1,4 +1,5 @@
-﻿@model UAMPass.Models.Administrador
+﻿@using UAMPass.Models.Dto
+@model LoginAdministradorDTO
 @{
     ViewData["Title"] = "Iniciar Sesión Administrador";
 }
@@ -17,16 +18,18 @@
                 </div>
             }
 
-            <form asp-controller="AdminAuth" asp-action="Login" method="post">
+            <form asp-controller="AdminAuth" asp-action="Login" method="post" novalidate>
 
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Usuario</label>
-                    <input type="text" name="usuario" class="form-control" placeholder="Ingresa tu usuario" required />
+                    <input type="text" asp-for="Usuario" class="form-control" placeholder="Ingresa tu usuario" />
+                    <span asp-validation-for="Usuario" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Contraseña</label>
-                    <input type="password" name="contrasena" class="form-control" placeholder="Ingresa tu contraseña" required />
+                    <input type="password" asp-for="Contrasena" class="form-control" placeholder="Ingresa tu contraseña" />
+                    <span asp-validation-for="Contrasena" class="text-danger"></span>
                 </div>
 
                 <button type="submit" class="btn btn-success w-100 py-2 fw-bold">
@@ -34,15 +37,13 @@
                 </button>
 
                 <div class="text-center mt-3">
-                    <a asp-controller="AdminAuth"
-                       asp-action="ForgotPassword"
-                       class="text-success fw-semibold"
-                       style="text-decoration:none;">
+                    <a asp-controller="AdminAuth" asp-action="ForgotPassword" class="text-success fw-semibold" style="text-decoration:none;">
                         ¿Olvidaste tu contraseña?
                     </a>
                 </div>
 
-            </form>
+            </form> 
+
         </div>
     </div>
 </div>

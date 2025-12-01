@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using UAMPass.Models;
 using UAMPass.Models.Dto;
-using static UAMPass.Models.Dto.aplicacionDto;
+using static UAMPass.Models.Dto.AplicacionDto; 
 
 namespace UAMPass.Controllers
 {
@@ -19,19 +19,19 @@ namespace UAMPass.Controllers
         }
         [HttpGet]
         [Route("api/postulaciones")]
-        public async Task<IActionResult> getPostulaciones([FromQuery] aplicacionDto param)
+        public async Task<IActionResult> getPostulaciones([FromQuery] AplicacionDto param) 
         {
             try
             {
                 var data = await _context.Aplicaciones.Where(w => (!param.IdEstudiante.HasValue || w.EstudianteId == param.IdEstudiante)
                 && (!param.IdEmpresa.HasValue || w.Pasantia.Empresa.Id == param.IdEmpresa))
-                    .Select(s => new listAplicacion
+                    .Select(s => new ListAplicacion 
                     {
                         Estudiante = s.Estudiante.Nombre,
                         Pasantia = s.Pasantia.Titulo,
                         FechaAplicacion = s.FechaAplicacion,
                         Estado = s.Status.ToString(),
-                        empresa = s.Pasantia.Empresa.Nombre
+                        Empresa = s.Pasantia.Empresa.Nombre, 
                     }).ToListAsync();
                 return Ok(data);
             }
@@ -44,14 +44,14 @@ namespace UAMPass.Controllers
 
         [HttpPost]
         [Route("api/postulaciones")]
-        public async Task<IActionResult> postPostulaciones([FromBody] createApplication obj)
+        public async Task<IActionResult> postPostulaciones([FromBody] CreateApplicationDto obj) // CORREGIDO
         {
             try
             {
                 Aplicacion aplicacion = new Aplicacion();
-                if (obj.EstudianteId == 0 || obj.EstudianteId == 0)
+                if (obj.EstudianteId == 0)
                     throw new Exception("El estudiante es obligatorio");
-                if (obj.PasantiaId == 0 || obj.PasantiaId == 0)
+                if (obj.PasantiaId == 0)
                     throw new Exception("Debe seleccionar una propuesta de pasantía.");
 
                 aplicacion.EstudianteId = obj.EstudianteId;
@@ -90,6 +90,7 @@ namespace UAMPass.Controllers
                     {
                         id = p.Id,
                         Estudiante = p.Estudiante.Nombre,
+                        cv = p.Estudiante.CvPdfPath,
                         Pasantia = p.Pasantia.Titulo,
                         FechaAplicacion = p.FechaAplicacion.ToString("dd/MM/yyyy"),
                         Estado = p.Status.ToString(),
@@ -124,4 +125,3 @@ namespace UAMPass.Controllers
 
     }
 }
-

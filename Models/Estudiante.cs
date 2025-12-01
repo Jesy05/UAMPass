@@ -56,6 +56,10 @@ namespace UAMPass.Models
         [DataType(DataType.Password)]
         public string? ContrasenaPlano { get; set; }
 
+        // En UAMPass.Models.Estudiante.cs
+
+        [NotMapped] // Esto significa: "No trates de crear una columna en la base de datos para esto"
+        public IFormFile? ArchivoCV { get; set; }
         public DateTime FechaRegistro { get; set; } = DateTime.UtcNow;
 
         // Fecha de último ingreso
@@ -65,9 +69,10 @@ namespace UAMPass.Models
         [StringLength(10)]
         public string? CodigoRecuperacion { get; set; }
 
-        // ---------------------------
+        public string? ResetToken { get; set; }
+        public DateTime? TokenExpiration { get; set; }
+
         // PERFIL DEL ESTUDIANTE
-        // ---------------------------
 
         // CV PDF (ruta en el sistema)
         [StringLength(300)]
@@ -83,7 +88,6 @@ namespace UAMPass.Models
 
         // Relación con aplicaciones
         public ICollection<Aplicacion> Aplicaciones { get; set; } = new List<Aplicacion>();
-
         // Notificaciones del estudiante
 
         public ICollection<Notificacion> Notificaciones { get; set; } = new List<Notificacion>();
