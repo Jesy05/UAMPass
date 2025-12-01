@@ -67,7 +67,7 @@ namespace UAMPass.Controllers
 
             // 4. REDIRECCIÓN: Al Dashboard de Admin
             // "Index" es la vista principal, "PortalAdmin" es tu controlador de administración
-            return RedirectToAction("Index", "PortalAdmin");
+            return RedirectToAction("Profile", "Administradores");
         }
 
         // GET: /AdminAuth/Registro
