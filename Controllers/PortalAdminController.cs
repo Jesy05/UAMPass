@@ -204,7 +204,7 @@ namespace UAMPass.Controllers.Admin
                 return RedirectToAction("Login", "AdminAuth"); // Redirige al login si no existe
 
             // Devuelve la vista con los datos del administrador
-            return View("~/Views/PortalAdmin/Profile", admin);
+            return View("~/Views/PortalAdmin/Profile.", admin);
         }
 
     }

@@ -71,7 +71,7 @@ namespace UAMPass.Controllers.Admin
             return RedirectToAction("Index", "Administradores");
         }
 
-
+     
         // GET: /AdminAuth/Registro
         [HttpGet]
         public IActionResult Registro()
@@ -79,7 +79,7 @@ namespace UAMPass.Controllers.Admin
             return View();
         }
 
-
+        // GET: /AdminAuth/Registro (Muestra el formulario de Registro)
         [HttpPost]
         public async Task<IActionResult> Registro(string usuario, string contrasena, string? nombre, string? correo)
         {
@@ -150,5 +150,5 @@ namespace UAMPass.Controllers.Admin
             return Convert.ToBase64String(bytes);
         }
     }
-
 }
+
