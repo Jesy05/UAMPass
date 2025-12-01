@@ -145,6 +145,22 @@ namespace UAMPass.Controllers
             }
         }
 
+        // GET: Empresas/ForgotPassword
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        // POST: Empresas/ForgotPassword
+        [HttpPost]
+        public IActionResult ForgotPassword(string correo)
+        {
+            // tu lógica aquí
+            ViewBag.Mensaje = "Si el correo existe, se enviarán instrucciones.";
+            return View();
+        }
+
+
         [HttpGet]
         [Route("api/empresas")]
         public async Task<IActionResult> getEmpresas()
