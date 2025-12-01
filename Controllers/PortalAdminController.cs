@@ -1,11 +1,8 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using UAMPass.Models;
 using System.Security.Cryptography;
 using System.Text;
-using System;
+using UAMPass.Models;
 
 namespace UAMPass.Controllers.Admin
 {
@@ -140,7 +137,8 @@ namespace UAMPass.Controllers.Admin
         {
             var list = await _db.Administradores
                 .AsNoTracking()
-                .Select(a => new {
+                .Select(a => new
+                {
                     a.Id,
                     a.Usuario
                 })
@@ -153,7 +151,8 @@ namespace UAMPass.Controllers.Admin
         {
             var a = await _db.Administradores.AsNoTracking()
                 .Where(x => x.Id == id)
-                .Select(x => new {
+                .Select(x => new
+                {
                     x.Id,
                     x.Usuario
                 })
@@ -190,5 +189,23 @@ namespace UAMPass.Controllers.Admin
             var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password ?? string.Empty));
             return Convert.ToBase64String(bytes);
         }
+        public async Task<IActionResult> Profile()
+        {
+            // Obtener el ID del administrador desde la sesión
+            var idString = HttpContext.Session.GetString("AdminId");
+            if (string.IsNullOrEmpty(idString) || !int.TryParse(idString, out int id))
+                return RedirectToAction("Login", "AdminAuth"); // Redirige al login si no hay sesión
+
+            // Buscar el administrador en la base de datos
+            var admin = await _db.Administradores.AsNoTracking()
+                .FirstOrDefaultAsync(a => a.Id == id);
+
+            if (admin == null)
+                return RedirectToAction("Login", "AdminAuth"); // Redirige al login si no existe
+
+            // Devuelve la vista con los datos del administrador
+            return View("~/Views/PortalAdmin/Profile", admin);
+        }
+
     }
 }

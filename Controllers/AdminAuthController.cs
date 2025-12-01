@@ -79,13 +79,44 @@ namespace UAMPass.Controllers.Admin
             return View();
         }
 
-        // POST: /AdminAuth/Registro 
+
         [HttpPost]
-        public IActionResult Registro(string usuario, string contrasena)
+        public async Task<IActionResult> Registro(string usuario, string contrasena, string? nombre, string? correo)
         {
-            // Redirige al Login o a donde necesites después de un intento de registro
-            return RedirectToAction("Login");
+            if (string.IsNullOrWhiteSpace(usuario) || string.IsNullOrWhiteSpace(contrasena))
+            {
+                ViewBag.Error = "Usuario y contraseña son obligatorios.";
+                return View();
+            }
+
+            // Verificar si el usuario ya existe
+            var existeUsuario = await _context.Administradores.AnyAsync(a => a.Usuario == usuario);
+            if (existeUsuario)
+            {
+                ViewBag.Error = "El usuario ya existe.";
+                return View();
+            }
+
+            // Crear nuevo administrador
+            var admin = new Administrador
+            {
+                Usuario = usuario,
+                Nombre = nombre,
+                Correo = correo,
+                ContrasenaHash = Hash(contrasena)
+            };
+
+            _context.Administradores.Add(admin);
+            await _context.SaveChangesAsync();
+
+            // Guardar ID y usuario en sesión para usar en Profile
+            HttpContext.Session.SetString("AdminId", admin.Id.ToString());
+            HttpContext.Session.SetString("AdminUser", admin.Usuario);
+
+            // Redirigir directamente al Profile en PortalAdminController
+            return RedirectToAction("Profile", "PortalAdmin");
         }
+
 
         // GET: /AdminAuth/ForgotPassword (Recuperación)
         [HttpGet]
@@ -119,4 +150,5 @@ namespace UAMPass.Controllers.Admin
             return Convert.ToBase64String(bytes);
         }
     }
+
 }
