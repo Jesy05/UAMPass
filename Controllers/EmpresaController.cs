@@ -52,17 +52,18 @@ namespace UAMPass.Controllers
             return View();
         }
 
+        public IActionResult Postulaciones()
+        {
+            return View();
+        }
+
         // POST: /Empresas/Login
+
         [HttpPost]
         public async Task<IActionResult> Login(LoginEmpresaDTO dto)
         {
             try
             {
-                if (string.IsNullOrEmpty(dto.ContactoEmail))
-                    throw new Exception("El correo no puede estar vacío.");
-                if (string.IsNullOrEmpty(dto.Contrasena))
-                    throw new Exception("La contraseña no puede estar vacía.");
-
                 using var sha256 = SHA256.Create();
                 var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(dto.Contrasena ?? string.Empty));
                 dto.Contrasena = Convert.ToBase64String(bytes);
@@ -83,9 +84,9 @@ namespace UAMPass.Controllers
             }
             catch (Exception ex)
             {
-                // Es mejor mostrar el error en la vista que lanzar una excepción cruda
                 ModelState.AddModelError("", ex.Message);
                 return View(dto);
+
             }
         }
 
@@ -137,8 +138,10 @@ namespace UAMPass.Controllers
             }
             catch (Exception ex)
             {
+
                 ModelState.AddModelError("", ex.Message);
                 return View(obj);
+
             }
         }
 

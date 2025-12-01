@@ -88,9 +88,8 @@ namespace UAMPass.Models
 
         // Relación con aplicaciones
         public ICollection<Aplicacion> Aplicaciones { get; set; } = new List<Aplicacion>();
-
-
         // Notificaciones del estudiante
+
         public ICollection<Notificacion> Notificaciones { get; set; } = new List<Notificacion>();
 
     }

@@ -18,7 +18,6 @@ namespace UAMPass.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
-        // ... TUS MÉTODOS DE SESSION HELPER (Déjalos igual) ...
         private int? GetEstudianteIdFromSession()
         {
             var idStr = HttpContext.Session.GetString("EstudianteId");
@@ -27,7 +26,6 @@ namespace UAMPass.Controllers
             return null;
         }
 
-        // ... TU MÉTODO PROFILE (Déjalo igual) ...
         public async Task<IActionResult> Profile()
         {
             var id = GetEstudianteIdFromSession();

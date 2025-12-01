@@ -27,13 +27,10 @@ namespace UAMPass.Controllers
                 var data = await _db.Pasantias.
                     Select(s => new PasantiaDto.ListPasantia // CORREGIDO: ListPasantia (Mayúscula)
                     {
-                        // CORREGIDO: Propiedades en Mayúscula para coincidir con DTO
+                        Id = s.Id,
                         Titulo = s.Titulo,
                         Descripcion = s.Descripcion,
-                        Empresa = s.EmpresaId,
-                        // Nota: En el DTO le pusimos NombreEmpresa a una propiedad, pero aquí usabas 'empresa' como int.
-                        // Ajusto para que compile con el DTO corregido que tiene 'NombreEmpresa' como string y 'Empresa' en la clase base.
-                        NombreEmpresa = s.Empresa.Nombre,
+                        Empresa = s.EmpresaId,                        
                         CarrerasPermitidas = string.Join(", ", s.RequiredCareers)
                     }).
                     ToListAsync();
@@ -63,12 +60,8 @@ namespace UAMPass.Controllers
 
                 pasantia.Titulo = obj.Titulo;
                 pasantia.Descripcion = obj.Descripcion;
-                // OJO: Aquí usas Session, asegúrate de que el nombre del string sea consistente ("empresaID" vs "EmpresaId")
-                // En EmpresasController usaste "empresaID". Aquí lo corrijo para que coincida.
-                var empresaIdStr = HttpContext.Session.GetString("empresaID");
-                pasantia.EmpresaId = string.IsNullOrEmpty(empresaIdStr) ? 0 : Convert.ToInt32(empresaIdStr);
-
-                pasantia.RequiredCareers = obj.RequiredCareersCsv;
+                pasantia.EmpresaId = Convert.ToInt32(HttpContext.Session.GetString("empresaID"));
+                pasantia.RequiredCareersCsv = string.Join(", ", obj.RequiredCareersCsv);
 
                 await _db.Pasantias.AddAsync(pasantia);
                 await _db.SaveChangesAsync();
@@ -79,7 +72,48 @@ namespace UAMPass.Controllers
             {
                 throw new Exception(ex.Message);
             }
+
+
         }
+
+        [HttpDelete("/Eliminar/pasantias/{id}")]
+        public async Task<IActionResult> Eliminar(int id)
+        {
+            Console.WriteLine($"ID recibido: {id}");
+            var pasantia = await _db.Pasantias.FindAsync(id);
+            if (pasantia == null)
+                return NotFound(new { success = false, mensaje = "La pasantía no existe." });
+
+            _db.Pasantias.Remove(pasantia);
+            await _db.SaveChangesAsync();
+
+
+            return Ok(new { success = true, mensaje = "Pasantía eliminada correctamente." });
+        }
+
+        [HttpPut("/Editar/pasantias/{id}")]
+        public IActionResult Editar(int id, [FromBody] PasantiaDto.Pasantias dto)
+        {
+            // Buscar la pasantía en la base de datos
+            var pasantia = _db.Pasantias.Find(id);
+            if (pasantia == null)
+            {
+                return NotFound("No se encontró la pasantía");
+            }
+
+            // Actualizar los campos
+            pasantia.Titulo = dto.Titulo;
+            pasantia.Descripcion = dto.Descripcion;
+            pasantia.RequiredCareers = dto.RequiredCareersCsv;
+
+            // Guardar cambios
+            _db.SaveChanges();
+
+            return Ok("Pasantía actualizada correctamente");
+        }
+
 
     }
 }
+
+

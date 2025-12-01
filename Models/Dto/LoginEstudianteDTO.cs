@@ -12,4 +12,6 @@ namespace UAMPass.Models.Dto
         [DataType(DataType.Password)]
         public string Contrasena { get; set; } = string.Empty;
     }
+
+
 }
