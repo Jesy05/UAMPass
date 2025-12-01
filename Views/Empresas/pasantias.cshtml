@@ -14,6 +14,7 @@
 <table id="tablaPasantias" class="table table-striped table-bordered">
     <thead class="table-dark">
         <tr>
+            <th>ID</th>
             <th>Nombre</th>
             <th>Descripción</th>
             <th>Carreras Permitidas</th>
@@ -47,7 +48,6 @@
                             <option value="Medicina">Medicina</option>
                             <option value="Derecho">Derecho</option>
                             <option value="Sistemas">Sistemas</option>
-                            <option value="Telecomunicaciones">Telecomunicaciones</option>
                             <option value="Arquitectura">Arquitectura</option>
                             <option value="Industrial">Industrial</option>
                         </select>
@@ -63,6 +63,68 @@
     </div>
 </div>
 
+<!-- Modal para editar pasantía -->
+<div class="modal fade" id="modalEditarPasantia" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Editar Pasantía</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formEditarPasantia">
+                    <input type="hidden" id="editarId">
+                    <div class="mb-3">
+                        <label for="editarTitulo" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="editarTitulo">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editarDescripcion" class="form-label">Descripcion</label>
+                        <input type="text" class="form-control" id="editarDescripcion">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editarCarreras" class="form-label">Carreras Permitidas</label>
+                        <select class="form-select" id="editarCarreras" multiple required>
+                            <option value="Ingeniería">Ingeniería</option>
+                            <option value="Medicina">Medicina</option>
+                            <option value="Derecho">Derecho</option>
+                            <option value="Sistemas">Sistemas</option>
+                            <option value="Arquitectura">Arquitectura</option>
+                        </select>
+                        <small class="text-muted">Puedes seleccionar varias carreras.</small>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button class="btn btn-primary" id="btnGuardarCambios">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Modal de confirmación eliminar -->
+<div class="modal fade" id="modalConfirmarEliminar" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLabel">Confirmación de Eliminación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                ¿Estás segura de que deseas <strong>eliminar esta pasantía</strong>?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" id="btnConfirmarEliminar">Eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 @section Scripts {
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
@@ -75,15 +137,21 @@
                     dataSrc: ''
                 },
                 columns: [
-                    // .NET devuelve JSON en camelCase (minúscula inicial) por defecto
+
+                    { "data": "id", "visible": false },
                     { data: 'titulo' },
                     { data: 'descripcion' },
                     { data: 'carrerasPermitidas' },
                     {
                         data: null,
                         render: function (data, type, row) {
-                            return `<button class="btn btn-sm btn-danger">Eliminar</button>`;
-                        }
+
+                            return `
+
+                                <button class="btn btn-warning btn-editar" data-id="${row.id}">Editar</button>
+                                <button class="btn btn-danger btn-eliminar" data-id="${row.id}">Eliminar</button>
+                            `;
+                        },
                     }
                 ]
             });
@@ -91,12 +159,11 @@
             $('#formCrear').on('submit', function (e) {
                 e.preventDefault();
 
-                // Objeto debe coincidir con PasantiaDto.CreatePasantia (PascalCase)
                 const createPasantia = {
                     Titulo: $('#Nombre').val(),
                     Descripcion: $('#Descripcion').val(),
-                    RequiredCareersCsv: $('#Carreras').val(), // Esto envía un array de strings
-                    Empresa: 0 // El ID se toma de la Sesión en el servidor, enviamos 0
+                    RequiredCareersCsv: $('#Carreras').val(),
+
                 };
 
                 $.ajax({
@@ -115,5 +182,60 @@
                 });
             });
         });
+
+        let idSeleccionado = null;
+
+        $(document).on('click', '.btn-eliminar', function () {
+            idSeleccionado = $(this).data('id');
+            $('#modalConfirmarEliminar').modal('show');
+        });
+
+
+        $('#btnConfirmarEliminar').on('click', function () {
+            $.ajax({
+                url: `/Eliminar/pasantias/${idSeleccionado}`,
+                type: 'DELETE',
+                success: function (response) {
+                    $('#modalConfirmarEliminar').modal('hide');
+                    alert("Pasantía eliminada correctamente");
+                    $('#tablaPasantias').DataTable().ajax.reload();
+                },
+                error: function () {
+                    alert("Error al eliminar la pasantía");
+                }
+            });
+        });
+
+        $(document).on('click', '.btn-editar', function () {
+            $('#editarId').val($(this).data('id'));
+            $('#editarTitulo').val($(this).data('titulo'));
+            $('#editarDescripcion').val($(this).data('descripcion'));
+            $('#editarCarreras').val($(this).data('RequiredCareersCsv'));
+            $('#modalEditarPasantia').modal('show');
+        });
+
+        $('#btnGuardarCambios').on('click', function () {
+            const id = $('#editarId').val();
+            const titulo = $('#editarTitulo').val();
+            const descripcion = $('#editarDescripcion').val();
+            const RequiredCareersCsv = $('#editarCarreras').val();
+
+
+            $.ajax({
+                url: `/Editar/pasantias/${id}`,
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify({ titulo,descripcion,RequiredCareersCsv }),
+                success: function (response) {
+                    $('#modalEditarPasantia').modal('hide');
+                    alert("Pasantía actualizada correctamente");
+                    $('#tablaPasantias').DataTable().ajax.reload();
+                },
+                error: function () {
+                    alert("Error al actualizar la pasantía");
+                }
+            });
+        });
+
     </script>
 }

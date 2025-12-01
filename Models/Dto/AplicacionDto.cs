@@ -13,7 +13,9 @@ namespace UAMPass.Models.Dto
             public string Pasantia { get; set; } = string.Empty;
             public DateTime FechaAplicacion { get; set; }
             public string Estado { get; set; } = string.Empty;
-            public string Empresa { get; set; } = string.Empty; // Corregido 'empresa' a 'Empresa'
+
+            public string Empresa { get; set; } = string.Empty; 
+
         }
 
         public class CreateApplicationDto // Cambié a Mayúscula
@@ -22,5 +24,12 @@ namespace UAMPass.Models.Dto
             public int EstudianteId { get; set; }
             public string? Comentarios { get; set; }
         }
+
+        public class EstadoDto
+        {
+            public int Id { get; set; }
+            public string Estado { get; set; } = string.Empty;
+        }
+
     }
 }

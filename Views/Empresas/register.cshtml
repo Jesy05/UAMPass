@@ -7,15 +7,14 @@
 
 <div class="container mt-5" style="max-width: 600px;">
     <h2 class="mb-4 text-center">Registro de Empresas</h2>
-
-    <form asp-action="Register" method="post" asp-controller="Empresas">
-
-        @* Validaciones generales *@
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+   
+    <form asp-action="Register" method="post"
+    asp-controller="Empresas">
 
         <div class="form-group mb-3">
             <label asp-for="Nombre">Nombre de la Empresa</label>
             <input asp-for="Nombre" class="form-control" />
+            <span asp-validation-for="Nombre" class="text-danger"></span>
             <span asp-validation-for="Nombre" class="text-danger"></span>
         </div>
 
@@ -23,11 +22,14 @@
             <label asp-for="ContactoEmail">Email de Contacto</label>
             <input asp-for="ContactoEmail" class="form-control" type="email" />
             <span asp-validation-for="ContactoEmail" class="text-danger"></span>
+            <span asp-validation-for="ContactoEmail" class="text-danger"></span>
         </div>
 
         <div class="form-group mb-3">
             <label asp-for="ContrasenaHash">Contraseña</label>
-            <input asp-for="ContrasenaHash" class="form-control" type="password" />
+
+            <input asp-for="ContrasenaHash" class="form-control" />
+            <span asp-validation-for="ContrasenaHash" class="text-danger" type="password"></span>
             <span asp-validation-for="ContrasenaHash" class="text-danger"></span>
         </div>
 
@@ -38,10 +40,8 @@
         </div>
 
         <div class="form-group mb-4">
-            <label asp-for="SitioWeb">Sitio WEB</label>
-            @* CORRECCIÓN: Usamos asp-for para que coincida con SitioWeb del DTO *@
-            <input asp-for="SitioWeb" class="form-control" placeholder="Ej: https://miempresa.com" />
-            <span asp-validation-for="SitioWeb" class="text-danger"></span>
+            <label>Sitio WEB</label>
+            <input type="text" name="Sitioweb" class="form-control"/>
         </div>
 
         <button type="submit" class="btn btn-primary w-100">Registrarse</button>
