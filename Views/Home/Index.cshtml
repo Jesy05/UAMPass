@@ -2,52 +2,149 @@
     ViewData["Title"] = "UAMPass - Portal de Pasantías";
 }
 
-<div class="d-flex flex-column align-items-center justify-content-center min-vh-100 text-center" style="background-color: #f9f9f9;">
+@* ESTILOS PERSONALIZADOS PARA ESTA PÁGINA 
+   (Puedes moverlos a site.css después si prefieres)
+*@
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+    }
 
-    <div class="card shadow p-4 border-0" style="max-width: 900px; border-radius: 25px;">
+    .portal-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: none;
+        border-radius: 20px;
+        overflow: hidden;
+        height: 100%;
+    }
 
-        <h1 class="fw-bold mb-2" style="color: #04a7ad;">Bienvenido a UAMPass</h1>
-        <p class="text-muted mb-4">Selecciona tu portal para continuar</p>
+        .portal-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15) !important;
+        }
 
+    .card-img-wrapper {
+        height: 220px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .card-img-top {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .portal-card:hover .card-img-top {
+        transform: scale(1.1);
+    }
+
+    .btn-portal {
+        border-radius: 50px;
+        padding: 10px 25px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+        transition: all 0.3s;
+    }
+
+    .title-uam {
+        color: #005f6b; /* Color institucional UAM aproximado */
+        font-weight: 800;
+        letter-spacing: -1px;
+    }
+</style>
+
+<div class="hero-section">
+    <div class="container text-center">
+
+        <!-- ENCABEZADO -->
+        <div class="mb-5 fade-in-up">
+            <h1 class="display-4 title-uam mb-3">Bienvenido a <span style="color: #04a7ad;">UAMPass</span></h1>
+            <p class="lead text-muted mx-auto" style="max-width: 700px;">
+                La plataforma oficial de conexión profesional de la Universidad Americana.
+                <br>
+                <strong>Conectamos talento estudiantil con oportunidades reales.</strong>
+            </p>
+        </div>
+
+        <!-- TARJETAS DE PORTALES -->
         <div class="row justify-content-center g-4">
 
-            <div class="col-md-4">
-                <div class="card shadow border-0" style="border-radius: 20px; overflow: hidden;">
-                    <img src="~/images/portal_estudiantes.jpg" class="card-img-top"
-                         style="height: 240px; object-fit: cover;">
-                    <div class="card-body text-center">
+            <!-- 1. PORTAL ESTUDIANTES -->
+            <div class="col-md-4 col-lg-3">
+                <div class="card portal-card shadow-sm h-100">
+                    <div class="card-img-wrapper">
+                        <!-- IMAGEN 1: Estudiantes -->
+                        <img src="~/images/portal_estudiantes.jpg"
+                             class="card-img-top"
+                             alt="Estudiantes UAM"
+                             onerror="this.src='https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'"> <!-- Fallback por si no tienes la imagen aún -->
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h4 class="card-title fw-bold text-dark">Portal Estudiante</h4>
+                        <p class="card-text text-muted small flex-grow-1">
+                            Gestiona tu perfil, sube tu CV y aplica a las mejores pasantías.
+                        </p>
                         <a asp-controller="EstudianteAuth" asp-action="Landing"
-                           class="btn btn-lg w-100 text-white"
-                           style="background-color: #04a7ad; border-radius: 12px;">
-                            Portal Estudiantes
+                           class="btn btn-primary btn-portal mt-3"
+                           style="background-color: #04a7ad; border: none;">
+                            Acceder <i class="bi bi-arrow-right ms-1"></i>
                         </a>
                     </div>
                 </div>
             </div>
 
-            <div class="col-md-4">
-                <div class="card shadow border-0" style="border-radius: 20px; overflow: hidden;">
-                    <img src="~/images/portal_empresas.jpg" class="card-img-top"
-                         style="height: 240px; object-fit: cover;">
-                    <div class="card-body text-center">
+            <!-- 2. PORTAL EMPRESAS -->
+            <div class="col-md-4 col-lg-3">
+                <div class="card portal-card shadow-sm h-100">
+                    <div class="card-img-wrapper">
+                        <!-- IMAGEN 2: Oficina moderna, reunión o edificio corporativo -->
+                        <img src="~/images/portal_empresas.jpg"
+                             class="card-img-top"
+                             alt="Empresas Aliadas"
+                             onerror="this.src='https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'">
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h4 class="card-title fw-bold text-dark">Portal Empresa</h4>
+                        <p class="card-text text-muted small flex-grow-1">
+                            Publica ofertas, busca talento y gestiona postulaciones.
+                        </p>
                         <a asp-controller="Empresas" asp-action="Index"
-                           class="btn btn-lg w-100"
-                           style="border: 2px solid #04a7ad; color: #04a7ad; border-radius: 12px;">
-                            Portal Empresas
+                           class="btn btn-outline-primary btn-portal mt-3"
+                           style="color: #04a7ad; border-color: #04a7ad;">
+                            Acceder <i class="bi bi-briefcase ms-1"></i>
                         </a>
                     </div>
                 </div>
             </div>
 
-            <div class="col-md-4">
-                <div class="card shadow border-0" style="border-radius: 20px; overflow: hidden;">
-                    <img src="~/images/portal_admin.jpg" class="card-img-top"
-                         style="height: 240px; object-fit: cover;">
-                    <div class="card-body text-center">
+            <!-- 3. PORTAL ADMINISTRACIÓN -->
+            <div class="col-md-4 col-lg-3">
+                <div class="card portal-card shadow-sm h-100">
+                    <div class="card-img-wrapper">
+                        <!-- IMAGEN 3: Edificio UAM, tecnología o gestión -->
+                        <img src="~/images/portal_admin.jpg"
+                             class="card-img-top"
+                             alt="Administración UAM"
+                             onerror="this.src='https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'">
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h4 class="card-title fw-bold text-dark">Portal Administración</h4>
+                        <p class="card-text text-muted small flex-grow-1">
+                            Control de usuarios, validación de ofertas y reportes.
+                        </p>
                         <a asp-controller="AdminAuth" asp-action="Landing"
-                           class="btn btn-lg w-100 text-white"
-                           style="background-color: #027d81; border-radius: 12px;">
-                            Portal Administración
+                           class="btn btn-dark btn-portal mt-3"
+                           style="background-color: #027d81; border: none;">
+                            Acceder <i class="bi bi-gear-fill ms-1"></i>
                         </a>
                     </div>
                 </div>
@@ -55,10 +152,10 @@
 
         </div>
 
+        <!-- PIE DE PÁGINA SIMPLE -->
+        <footer class="mt-5 pt-4 text-muted small">
+            <p> ... </p>
+        </footer>
+
     </div>
-
-    <footer class="mt-5 text-muted small">
-        <p>© 2025 Universidad Americana (UAM) · Proyecto UAMPass</p>
-    </footer>
-
 </div>
