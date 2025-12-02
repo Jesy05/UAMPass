@@ -18,7 +18,7 @@ namespace UAMPass.Models.Dto
 
         }
 
-        public class CreateApplicationDto // Cambié a Mayúscula
+        public class CreateApplication
         {
             public int PasantiaId { get; set; }
             public int EstudianteId { get; set; }
