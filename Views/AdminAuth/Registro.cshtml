@@ -1,32 +1,56 @@
-﻿@{
+﻿@model UAMPass.Models.Administrador
+
+@{
     ViewData["Title"] = "Nuevo Administrador";
 }
+
 <div class="container mt-5" style="max-width: 600px;">
-    <h2 class="text-center mb-4">Nuevo Administrador</h2>
-
-    <form method="post">
-        <div class="mb-3">
-            <label class="form-label">Nombre</label>
-            <input type="text" name="nombre" class="form-control" required />
+    <div class="card shadow-sm border-0" style="border-radius: 15px;">
+        <div class="card-header bg-success text-white text-center" style="border-radius: 15px 15px 0 0;">
+            <h3 class="mb-0 fw-bold">Nuevo Administrador</h3>
         </div>
 
-        <div class="mb-3">
-            <label class="form-label">Correo</label>
-            <input type="email" name="correo" class="form-control" required />
-        </div>
+        <div class="card-body p-4">
+            <form asp-action="Registro" method="post">
+                <!-- Esto muestra errores generales si fallan las validaciones -->
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
 
-        <div class="mb-3">
-            <label class="form-label">Usuario</label>
-            <input type="text" name="usuario" class="form-control" required />
-        </div>
+                <div class="mb-3">
+                    <label asp-for="Nombre" class="form-label fw-bold">Nombre Completo</label>
+                    <input asp-for="Nombre" class="form-control" placeholder="Ej: Marjuri" />
+                    <span asp-validation-for="Nombre" class="text-danger"></span>
+                </div>
 
-        <div class="mb-3">
-            <label class="form-label">Contraseña</label>
-            <input type="password" name="contrasena" class="form-control" required />
-        </div>
+                <div class="mb-3">
+                    <label asp-for="Correo" class="form-label fw-bold">Correo Institucional</label>
+                    <input asp-for="Correo" class="form-control" placeholder="ejemplo@uamv.edu.ni" />
+                    <span asp-validation-for="Correo" class="text-danger"></span>
+                </div>
 
-        <button type="submit" class="btn btn-success" style="background-color: #198754;">
-            Guardar
-        </button>
-    </form>
+                <div class="mb-3">
+                    <label asp-for="Usuario" class="form-label fw-bold">Usuario</label>
+                    <input asp-for="Usuario" class="form-control" placeholder="Ej: marjuri.admin" />
+                    <span asp-validation-for="Usuario" class="text-danger"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="ContrasenaPlano" class="form-label fw-bold">Contraseña</label>
+                    <!-- OJO: Aquí usamos ContrasenaPlano para que coincida con el modelo -->
+                    <input asp-for="ContrasenaPlano" type="password" class="form-control" placeholder="********" />
+                    <span asp-validation-for="ContrasenaPlano" class="text-danger"></span>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-success btn-lg">
+                        <i class="bi bi-save-fill"></i> Guardar
+                    </button>
+                    <a asp-action="Login" class="btn btn-outline-secondary">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -68,7 +68,7 @@ namespace UAMPass.Controllers
             HttpContext.Session.SetString("EstudianteNombre", estudiante.Nombre);
 
             // Actualizar último login (opcional)
-            // Asumo que actualizaste el modelo Estudiante con el campo UltimoLogin
+
             estudiante.UltimoLogin = System.DateTime.UtcNow;
             _db.Update(estudiante);
             await _db.SaveChangesAsync();

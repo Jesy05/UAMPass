@@ -35,9 +35,19 @@ namespace UAMPass.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Usuario")
+                    b.Property<string>("Correo")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("Usuario")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.HasKey("Id");
 

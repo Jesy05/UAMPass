@@ -12,8 +12,8 @@ using UAMPass.Models;
 namespace UAMPass.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251119152705_AddNotificaciones")]
-    partial class AddNotificaciones
+    [Migration("20251201000943_InicialCompleta")]
+    partial class InicialCompleta
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,6 +25,27 @@ namespace UAMPass.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("UAMPass.Models.Administrador", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ContrasenaHash")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Usuario")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Administradores", "uampass");
+                });
 
             modelBuilder.Entity("UAMPass.Models.Aplicacion", b =>
                 {
@@ -70,6 +91,11 @@ namespace UAMPass.Migrations
                     b.Property<string>("ContactoEmail")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<string>("ContrasenaHash")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("Direccion")
                         .IsRequired()
@@ -143,6 +169,12 @@ namespace UAMPass.Migrations
                         .IsRequired()
                         .HasMaxLength(120)
                         .HasColumnType("character varying(120)");
+
+                    b.Property<string>("ResetToken")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("TokenExpiration")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime?>("UltimoLogin")
                         .HasColumnType("timestamp with time zone");
