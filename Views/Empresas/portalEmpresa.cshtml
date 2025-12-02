@@ -2,33 +2,56 @@
     ViewData["Title"] = "UAMPass - Portal de Empresas";
 }
 
-<div class="d-flex flex-column align-items-center justify-content-center min-vh-100 text-center" style="background-color: #f9f9f9;">
-    <div class="card shadow-lg border-0" style="width: 420px; border-radius: 16px;">
+<div class="container-fluid d-flex flex-column align-items-center justify-content-center min-vh-100" style="background-color: #f9f9f9;">
 
-        <div class="card-body p-4">
-            <h3 class="text-center fw-bold text-primary mb-3">Bienvenido a UAMPass Empresas</h3>
-            <p class="text-center text-muted mb-4">¿Qué desea hacer hoy?.</p>
+    <div class="text-center mb-5">
+        <h2 class="fw-bold text-primary mb-2">Bienvenido a UAMPass Empresas</h2>
+        <p class="text-muted fs-5">Seleccione una opción para comenzar a gestionar su talento.</p>
+    </div>
 
-            <!-- Pasantías -->
-            <div class="d-grid gap-3">
-                        <a asp-controller="Empresas" asp-action="pasantias"
-                           class="btn btn-lg w-100 text-white"
-                           style="background-color: #04a7ad; border-radius: 12px;">
-                            Pasantías
-                        </a>
+    <div class="row justify-content-center g-4 w-100" style="max-width: 1000px;">
 
-            <!-- Postulaciones -->
-                <a asp-controller="Empresas" asp-action="postulaciones"
-                    class="btn btn-lg w-100"
-                    style="border: 2px solid #04a7ad; color: #04a7ad; border-radius: 12px;">
-                    Postulaciones
-                </a>
+        <div class="col-md-5">
+            <div class="card shadow border-0 h-100" style="border-radius: 16px; transition: transform 0.3s;">
+                <img src="~/images/empresa_pasantias.jpg" class="card-img-top" alt="Gestión de Pasantías"
+                     style="border-top-left-radius: 16px; border-top-right-radius: 16px; height: 200px; object-fit: cover;">
+
+                <div class="card-body p-4 text-center d-flex flex-column">
+                    <h4 class="fw-bold text-dark mb-3">Gestión de Pasantías</h4>
+                    <p class="text-muted flex-grow-1">
+                        Crea nuevas oportunidades, edita los requisitos y administra las ofertas de pasantías visibles para los estudiantes.
+                    </p>
+                    <a asp-controller="Empresas" asp-action="pasantias"
+                       class="btn btn-lg w-100 text-white mt-3"
+                       style="background-color: #04a7ad; border-radius: 12px;">
+                        Gestionar Pasantías
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-5">
+            <div class="card shadow border-0 h-100" style="border-radius: 16px; transition: transform 0.3s;">
+                <img src="~/images/empresa_postulaciones.jpg" class="card-img-top" alt="Revisión de Postulaciones"
+                     style="border-top-left-radius: 16px; border-top-right-radius: 16px; height: 200px; object-fit: cover;">
+
+                <div class="card-body p-4 text-center d-flex flex-column">
+                    <h4 class="fw-bold text-dark mb-3">Revisar Postulaciones</h4>
+                    <p class="text-muted flex-grow-1">
+                        Visualiza los perfiles de los estudiantes que han aplicado a tus ofertas y selecciona a los mejores candidatos.
+                    </p>
+                    <a asp-controller="Empresas" asp-action="postulaciones"
+                       class="btn btn-lg w-100"
+                       style="border: 2px solid #04a7ad; color: #04a7ad; border-radius: 12px; background-color: white;">
+                        Ver Postulantes
+                    </a>
+                </div>
             </div>
         </div>
 
     </div>
 
-    <footer class="mt-5 text-muted small">
+    <footer class="mt-5 text-muted small text-center">
         <p>© 2025 Universidad Americana (UAM) · Proyecto UAMPass</p>
     </footer>
 
