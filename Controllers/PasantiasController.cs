@@ -20,14 +20,15 @@ namespace UAMPass.Controllers
 
         [HttpGet]
         [Route("/api/pasantias")]
-        public async Task<IActionResult> getPasantias()
+        public async Task<IActionResult> getPasantias([FromQuery] int? IdEmpresa)
         {
             try
             {
                 var data = await _db.Pasantias.
+                     Where(w => w.EmpresaId == IdEmpresa).
                     Select(s => new PasantiaDto.ListPasantia // CORREGIDO: ListPasantia (Mayúscula)
                     {
-                        Id = s.Id,
+                        IdPasantia = s.Id,
                         Titulo = s.Titulo,
                         Descripcion = s.Descripcion,
                         Empresa = s.EmpresaId,                        

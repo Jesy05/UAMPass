@@ -18,6 +18,7 @@ namespace UAMPass.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
+
         // ... TUS MÉTODOS DE SESSION HELPER (Déjalos igual) ...
         private int? GetEstudianteIdFromSession()
         {
