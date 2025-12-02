@@ -203,8 +203,41 @@ namespace UAMPass.Controllers.Admin
 
             // Devuelve la vista con los datos del administrador
             return View("~/Views/PortalAdmin/Profile.cshtml", admin);
-
         }
 
+            private const string VIEW_PORTAL_PATH = "~/Views/PortalAdmin/";
+
+        private const string VIEW_PORTAL = "~/Views/PortalAdmin/";
+
+        // Menú principal (Bienvenido, Fabi...)
+        public async Task<IActionResult> Menu()
+        {
+            var idString = HttpContext.Session.GetString("AdminId");
+            if (string.IsNullOrEmpty(idString) || !int.TryParse(idString, out int id))
+                return RedirectToAction("Login", "AdminAuth");
+
+            var admin = await _db.Administradores.AsNoTracking()
+                .FirstOrDefaultAsync(a => a.Id == id);
+
+            if (admin == null)
+                return RedirectToAction("Login", "AdminAuth");
+
+            return View(VIEW_PORTAL + "Menu.cshtml", admin);
+        }
+
+        public IActionResult Estudiantes()
+        {
+            return View(VIEW_PORTAL + "Estudiantes.cshtml");
+        }
+
+        public IActionResult Contactos()
+        {
+            return View(VIEW_PORTAL + "Contactos.cshtml");
+        }
+
+        public IActionResult Pasantias()
+        {
+            return View(VIEW_PORTAL + "Pasantias.cshtml");
+        }
     }
 }

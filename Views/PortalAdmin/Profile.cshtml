@@ -74,11 +74,12 @@
                     ¡Hola @(string.IsNullOrEmpty(Model?.Nombre) ? "Administrador" : Model.Nombre)!
                     Desde aquí tienes el control total  ahora para gestionar estudiantes, empresas y pasantías.
                 </p>
-
-                <a asp-controller="PortalAdmin" asp-action="Index"
+                <a asp-controller="Administradores" asp-action="Menu"
                    class="btn btn-primary"
                    style="background-color:@mainColor; border-color:@mainColor; --bs-btn-hover-bg:@accentColor;">
                     <i class="bi bi-house-door-fill me-1"></i> Ir al Menú
+                </a>
+
                 </a>
             </div>
         </div>
