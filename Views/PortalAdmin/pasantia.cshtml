@@ -1,0 +1,214 @@
+﻿@using UAMPass.Models.Dto
+@using Microsoft.AspNetCore.Http
+@model PasantiaDto.CreatePasantia
+
+@{
+    ViewData["Title"] = "Gestión Global de Pasantías";
+}
+
+<div class="card shadow-sm border-0 rounded-4 p-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold text-primary">Listado Global de Pasantías</h2>
+            <p class="text-muted">Administra las ofertas de todas las empresas registradas.</p>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table id="tablaPasantiasAdmin" class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Empresa</th>
+                    <th>Título</th>
+                    <th>Carreras</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="modalEditarPasantia" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title">Editar Pasantía (Modo Admin)</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formEditarPasantia">
+                    <input type="hidden" id="editarId">
+
+                    <div class="mb-3">
+                        <label for="editarTitulo" class="form-label fw-bold">Título</label>
+                        <input type="text" class="form-control" id="editarTitulo" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="editarDescripcion" class="form-label fw-bold">Descripción</label>
+                        <textarea class="form-control" id="editarDescripcion" rows="3" required></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="editarCarreras" class="form-label fw-bold">Carreras Permitidas</label>
+                        <input type="text" class="form-control" id="editarCarreras" placeholder="Ej: Sistemas, Industrial">
+                        <small class="text-muted">Separa las carreras por comas.</small>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button class="btn btn-primary" id="btnGuardarCambios">Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalConfirmarEliminar" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">Eliminar Pasantía</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>¿Estás seguro de que deseas eliminar esta pasantía permanentemente?</p>
+                <p class="text-danger small mb-0">Esta acción borrará también las postulaciones asociadas.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" id="btnConfirmarEliminar">Sí, Eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
+    <script>
+        $(document).ready(function () {
+
+            $('#tablaPasantiasAdmin').DataTable({
+                ajax: {
+                    url: `/api/admin/pasantias`,
+                    dataSrc: ''
+                },
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+                },
+                columns: [
+                    { data: 'idPasantia', visible: false },
+                    {
+                        data: 'nombreEmpresa',
+                        defaultContent: 'N/A',
+                        render: function(data) {
+                            return `<span class="fw-bold text-primary">${data}</span>`;
+                        }
+                    },
+                    { data: 'titulo' },
+                    {
+                        data: 'carrerasPermitidas',
+                        render: function(data) {
+                            if(!data) return "";
+                            return data.split(',').map(c =>
+                                `<span class="badge bg-info text-dark me-1">${c.trim()}</span>`
+                            ).join('');
+                        }
+                    },
+                    {
+                        data: null,
+                        orderable: false,
+                        className: "text-center",
+                        render: function (data, type, row) {
+                            // CORRECCIÓN VISUAL: Usamos 'd-flex' y 'gap-2' en lugar de btn-group
+                            // para que los botones tengan espacio y no se deformen.
+                            return `
+                                <div class="d-flex justify-content-center gap-2">
+                                    <button class="btn btn-sm btn-warning btn-editar text-white"
+                                            title="Editar"
+                                            data-id="${row.idPasantia}"
+                                            data-titulo="${row.titulo}"
+                                            data-descripcion="${row.descripcion}"
+                                            data-carreras="${row.carrerasPermitidas}">
+                                        <i class="bi bi-pencil-fill"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger btn-eliminar"
+                                            title="Eliminar"
+                                            data-id="${row.idPasantia}">
+                                        <i class="bi bi-trash-fill"></i>
+                                    </button>
+                                </div>
+                            `;
+                        }
+                    }
+                ]
+            });
+        });
+
+        // VARIABLES GLOBALES
+        var idSeleccionado = null;
+
+        // --- LÓGICA DE ELIMINAR ---
+        $(document).on('click', '.btn-eliminar', function () {
+            idSeleccionado = $(this).data('id');
+            $('#modalConfirmarEliminar').modal('show');
+        });
+
+        $('#btnConfirmarEliminar').on('click', function () {
+            $.ajax({
+                // CORRECCIÓN: Apuntamos a la nueva ruta /api/admin/pasantias/ID
+                url: `/api/admin/pasantias/${idSeleccionado}`,
+                type: 'DELETE',
+                success: function (response) {
+                    $('#modalConfirmarEliminar').modal('hide');
+                    $('#tablaPasantiasAdmin').DataTable().ajax.reload();
+                    // Opcional: Un Toast o alerta más discreta
+                },
+                error: function (xhr) {
+                    alert("Error al eliminar: " + xhr.responseText);
+                }
+            });
+        });
+
+        // --- LÓGICA DE EDITAR ---
+        $(document).on('click', '.btn-editar', function () {
+            $('#editarId').val($(this).data('id'));
+            $('#editarTitulo').val($(this).data('titulo'));
+            $('#editarDescripcion').val($(this).data('descripcion'));
+            $('#editarCarreras').val($(this).data('carreras'));
+
+            $('#modalEditarPasantia').modal('show');
+        });
+
+        $('#btnGuardarCambios').on('click', function () {
+            const id = $('#editarId').val();
+
+            const dataToSend = {
+                titulo: $('#editarTitulo').val(),
+                descripcion: $('#editarDescripcion').val(),
+                RequiredCareersCsv: $('#editarCarreras').val()
+            };
+
+            $.ajax({
+                // CORRECCIÓN: Apuntamos a la nueva ruta de Admin para editar
+                url: `/api/admin/pasantias/${id}`,
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify(dataToSend),
+                success: function (response) {
+                    $('#modalEditarPasantia').modal('hide');
+                    $('#tablaPasantiasAdmin').DataTable().ajax.reload();
+                    alert("Pasantía actualizada correctamente.");
+                },
+                error: function (xhr) {
+                    alert("Error al actualizar: " + xhr.status);
+                }
+            });
+        });
+    </script>
+}

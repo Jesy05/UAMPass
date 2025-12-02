@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using System.Text;
 using UAMPass.Models;
+using UAMPass.Models.Dto;
 
 namespace UAMPass.Controllers.Admin
 {
@@ -235,9 +236,77 @@ namespace UAMPass.Controllers.Admin
             return View(VIEW_PORTAL + "Contactos.cshtml");
         }
 
+        // 
+        // --- API PARA OBTENER TODAS LAS PASANTÍAS (PARA EL ADMIN) ---
+        [HttpGet("/api/admin/pasantias")]
+        public async Task<IActionResult> GetTodasLasPasantias()
+        {
+            var pasantias = await _db.Pasantias
+                .AsNoTracking()
+                .Include(p => p.Empresa)
+                .Select(p => new
+                {
+                    // 1. CORREGIDO: En la base de datos se llama 'Id', pero el frontend espera 'idPasantia'
+                    IdPasantia = p.Id,
+
+                    p.Titulo,
+                    p.Descripcion,
+
+                    // 2. CORREGIDO: Usamos el nombre técnico 'RequiredCareersCsv' pero se lo enviamos 
+                    // al frontend como 'carrerasPermitidas' para que la tabla lo entienda.
+                    CarrerasPermitidas = p.RequiredCareersCsv,
+
+                    // 3. CORREGIDO: Usamos 'Nombre' porque así está en tu modelo Empresa.cs
+                    NombreEmpresa = p.Empresa != null ? p.Empresa.Nombre : "Desconocida"
+                })
+                .ToListAsync();
+
+            return Json(pasantias);
+        }
+        //
+
+        // --- API PARA ELIMINAR UNA PASANTÍA (SOLO ADMIN) ---
+        [HttpDelete("/api/admin/pasantias/{id}")]
+        public async Task<IActionResult> DeletePasantiaAdmin(int id)
+        {
+            var pasantia = await _db.Pasantias.FindAsync(id);
+            if (pasantia == null)
+            {
+                return NotFound(new { message = "Pasantía no encontrada" });
+            }
+
+            _db.Pasantias.Remove(pasantia);
+            await _db.SaveChangesAsync();
+
+            return Ok(new { message = "Eliminado correctamente" });
+        }
+
+        // --- API PARA EDITAR UNA PASANTÍA (SOLO ADMIN) ---
+        // Agregamos esto de una vez para que te funcione el botón de Editar también
+        [HttpPut("/api/admin/pasantias/{id}")]
+        public async Task<IActionResult> UpdatePasantiaAdmin(int id, [FromBody] PasantiaDto.CreatePasantia model)
+        {
+            var pasantia = await _db.Pasantias.FindAsync(id);
+            if (pasantia == null) return NotFound();
+
+            // Actualizamos los datos
+            pasantia.Titulo = model.Titulo;
+            pasantia.Descripcion = model.Descripcion;
+            // FIX: Convert List<string> to CSV string
+            pasantia.RequiredCareersCsv = model.RequiredCareersCsv != null
+                ? string.Join(",", model.RequiredCareersCsv)
+                : null;
+
+            await _db.SaveChangesAsync();
+            return Ok();
+        }
+
+        //
+
         public IActionResult Pasantias()
         {
-            return View(VIEW_PORTAL + "Pasantias.cshtml");
+            // Cambiamos "Pasantias.cshtml" por "pasantia.cshtml" (como se llama tu archivo real)
+            return View(VIEW_PORTAL + "pasantia.cshtml");
         }
     }
 }

@@ -10,7 +10,6 @@
             <div class="card shadow-lg border-0 rounded-4">
                 <div class="card-body text-center py-5">
 
-                    <!-- Título -->
                     <h1 class="fw-bold mb-2">
                         Bienvenido, @Model.Usuario 👋
                     </h1>
@@ -19,8 +18,6 @@
                     </p>
 
                     <hr class="mb-4" />
-
-                    <!-- Botones del menú -->
                     <div class="row g-3 mb-4 justify-content-center">
 
                         <div class="col-12 col-md-3">
@@ -30,10 +27,9 @@
                             </a>
                         </div>
 
-
                         <div class="col-12 col-md-3">
-                            <a asp-controller="Administradores" asp-action="Estudiantes"
-                               class="btn btn-outline-info btn-lg w-100 rounded-4">
+                            <a asp-controller="Estudiantes" asp-action="Index"
+                               class="btn btn-outline-info btn-lg w-100 rounded-4 custom-outline">
                                 Estudiantes
                             </a>
                         </div>
@@ -43,12 +39,11 @@
                                class="btn btn-lg w-100 rounded-4 btn-contactos">
                                 Contactos
                             </a>
-                    
                         </div>
 
                         <div class="col-12 col-md-3">
                             <a asp-controller="Administradores" asp-action="Pasantias"
-                               class="btn btn-outline-warning btn-lg w-100 rounded-4">
+                               class="btn btn-outline-warning btn-lg w-100 rounded-4 custom-outline">
                                 Pasantía
                             </a>
                         </div>
@@ -57,7 +52,6 @@
 
                     <hr class="mb-4" />
 
-                    <!-- Botón Cerrar sesión -->
                     <div class="d-flex justify-content-center">
                         <a asp-controller="AdminAuth" asp-action="Logout"
                            class="btn btn-danger btn-lg px-5 rounded-4">
@@ -80,57 +74,36 @@
         border-radius: 24px;
     }
 
-    .btn-outline-info {
-        border-width: 2px;
+    /* Asegura que los botones por defecto de Bootstrap (Info y Warning) tengan borde de 2px */
+    .custom-outline {
+        border-width: 2px !important;
     }
 
-    .btn-outline-warning {
-        border-width: 2px;
-    }
+    /* --- ESTILOS PERSONALIZADOS --- */
 
-<style>
-    /* BOTÓN CONTACTOS - Color #004AAD */
+    /* BOTÓN CONTACTOS - Azul (#004AAD) */
     .btn-contactos {
         border: 2px solid #004AAD !important;
         color: #004AAD !important;
         background-color: transparent !important;
+        transition: all 0.3s ease;
     }
 
-        /* Hover */
         .btn-contactos:hover {
             background-color: #004AAD !important;
             color: #ffffff !important;
         }
 
-        /* Estado activo / focus */
-        .btn-contactos:focus,
-        .btn-contactos:active {
-            background-color: #00347A !important;
+    /* BOTÓN INICIO - Verde (#059669) */
+    .btn-inicio {
+        border: 2px solid #059669 !important;
+        color: #059669 !important;
+        background-color: transparent !important;
+        transition: all 0.3s ease;
+    }
+
+        .btn-inicio:hover {
+            background-color: #059669 !important;
             color: white !important;
-            border-color: #00347A !important;
-            box-shadow: none !important;
         }
 </style>
-/* BOTÓN INICIO - Verde */
-.btn-inicio {
-    border: 2px solid #059669 !important; /* verde moderno */
-    color: #059669 !important;
-    background-color: transparent !important;
-}
-
-/* Hover */
-.btn-inicio:hover {
-    background-color: #059669 !important;
-    color: white !important;
-}
-
-/* Active / Focus */
-.btn-inicio:focus,
-.btn-inicio:active {
-    background-color: #047857 !important; /* verde más oscuro */
-    color: white !important;
-    border-color: #047857 !important;
-    box-shadow: none !important;
-}
-
-
