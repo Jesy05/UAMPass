@@ -25,7 +25,7 @@ namespace UAMPass.Controllers
             try
             {
                 var data = await _db.Pasantias.
-                     Where(w => w.EmpresaId == IdEmpresa).
+                     Where(w => (w.EmpresaId == IdEmpresa)).
                     Select(s => new PasantiaDto.ListPasantia // CORREGIDO: ListPasantia (Mayúscula)
                     {
                         IdPasantia = s.Id,

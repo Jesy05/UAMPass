@@ -1,4 +1,5 @@
 ﻿@using UAMPass.Models.Dto
+@using Microsoft.AspNetCore.Http 
 @model PasantiaDto.CreatePasantia
 @{
     ViewData["Title"] = "Gestión de Pasantías";
@@ -131,14 +132,16 @@
 
     <script>
         $(document).ready(function () {
+            var IdEmpersa = @Context.Session.GetString("empresaID")
+            console.log(IdEmpersa)
             $('#tablaPasantias').DataTable({
                 ajax: {
-                    url: '/api/pasantias',
+                    url: `/api/pasantias?IdEmpresa=${IdEmpersa}`,
                     dataSrc: ''
                 },
                 columns: [
 
-                    { "data": "id", "visible": false },
+                    { data: 'idPasantia', visible: false },
                     { data: 'titulo' },
                     { data: 'descripcion' },
                     { data: 'carrerasPermitidas' },
@@ -148,8 +151,8 @@
 
                             return `
 
-                                <button class="btn btn-warning btn-editar" data-id="${row.id}">Editar</button>
-                                <button class="btn btn-danger btn-eliminar" data-id="${row.id}">Eliminar</button>
+                                <button class="btn btn-warning btn-editar" data-id="${row.idPasantia}">Editar</button>
+                                <button class="btn btn-danger btn-eliminar" data-id="${row.idPasantia}">Eliminar</button>
                             `;
                         },
                     }
@@ -183,10 +186,11 @@
             });
         });
 
-        let idSeleccionado = null;
+        var idSeleccionado = null;
 
         $(document).on('click', '.btn-eliminar', function () {
             idSeleccionado = $(this).data('id');
+            console.log(idSeleccionado)
             $('#modalConfirmarEliminar').modal('show');
         });
 
