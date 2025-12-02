@@ -12,6 +12,7 @@
 
         <div class="card-body p-4">
             <form asp-action="Registro" method="post">
+
                 <!-- Esto muestra errores generales si fallan las validaciones -->
                 <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
 
@@ -35,7 +36,8 @@
 
                 <div class="mb-4">
                     <label asp-for="ContrasenaPlano" class="form-label fw-bold">Contraseña</label>
-                    <!-- OJO: Aquí usamos ContrasenaPlano para que coincida con el modelo -->
+
+                    <!-- Aquí usamos ContrasenaPlano para que coincida con el modelo -->
                     <input asp-for="ContrasenaPlano" type="password" class="form-control" placeholder="********" />
                     <span asp-validation-for="ContrasenaPlano" class="text-danger"></span>
                 </div>
