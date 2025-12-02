@@ -144,7 +144,7 @@ namespace UAMPass.Controllers
             }
 
             var token = Guid.NewGuid().ToString();
-            // 🛑 NOTA: Estas propiedades (ResetToken y TokenExpiration) deben existir en el modelo Estudiante.
+            // Estas propiedades (ResetToken y TokenExpiration) deben existir en el modelo Estudiante.
             // Si tu modelo Estudiante no tiene estas propiedades, debes agregarlas:
             estudiante.ResetToken = token;
             estudiante.TokenExpiration = DateTime.Now.AddHours(1);
@@ -181,7 +181,7 @@ namespace UAMPass.Controllers
         [HttpGet]
         public IActionResult ResetPassword(string token)
         {
-            // 🛑 NOTA: ResetPasswordViewModel debe existir
+            // ResetPasswordViewModel debe existir
             var estudiante = _db.Estudiantes.FirstOrDefault(e => e.ResetToken == token && e.TokenExpiration > DateTime.Now);
             if (estudiante == null)
             {
