@@ -100,8 +100,6 @@ namespace UAMPass.Controllers.Admin
                 original.ContrasenaHash = HashPassword(administrador.ContrasenaPlano);
             }
 
-            // No hay campos de Carreras, Facultad, etc., en el modelo Administrador.
-
             await _db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
