@@ -1,0 +1,86 @@
+﻿@model IEnumerable<UAMPass.Models.Estudiante>
+
+@{
+    ViewData["Title"] = "Estudiantes Registrados";
+    var total = Model?.Count() ?? 0;
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-11">
+            <div class="card shadow border-0 rounded-4">
+
+                <!-- Encabezado -->
+                <div class="card-header text-white rounded-top-4" style="background-color:#00A8A8;">
+                    <h3 class="mb-0 fw-bold">
+                        Estudiantes Registrados (@total)
+                    </h3>
+                </div>
+
+                <div class="card-body p-0">
+
+                    <!-- Tabla -->
+                    <div class="table-responsive">
+                        <table class="table table-striped mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Correo</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (!Model.Any())
+                                {
+                                    <tr>
+                                        <td colspan="3" class="text-center py-4">
+                                            No hay estudiantes registrados aún.
+                                        </td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    foreach (var e in Model)
+                                    {
+                                        <tr>
+                                            <!-- AJUSTA ESTOS NOMBRES A TU MODELO REAL -->
+                                            <td>@e.Nombre</td>    @* si en tu modelo se llama NombreCompleto, cámbialo aquí *@
+                                            <td>@e.Correo</td>    @* si en tu modelo se llama Email, cámbialo aquí *@
+
+                                            <td>
+                                                <a asp-controller="Estudiantes" asp-action="Details" asp-route-id="@e.Id"
+                                                   class="btn btn-sm btn-outline-primary mb-1">
+                                                    Ver
+                                                </a>
+                                                <a asp-controller="Estudiantes" asp-action="Edit" asp-route-id="@e.Id"
+                                                   class="btn btn-sm btn-outline-secondary">
+                                                    Editar
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        background-color: #f3f4f6;
+    }
+
+    .card {
+        border-radius: 16px;
+    }
+
+    .card-header {
+        border-top-left-radius: 16px !important;
+        border-top-right-radius: 16px !important;
+    }
+</style>
