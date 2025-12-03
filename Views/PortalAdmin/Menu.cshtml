@@ -1,0 +1,180 @@
+﻿@model UAMPass.Models.Administrador
+
+@{
+    ViewData["Title"] = "Menú Administrador";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-body text-center py-5">
+
+                    <!-- Título -->
+                    <h1 class="fw-bold mb-2">
+                        Bienvenido, @Model.Usuario 👋
+                    </h1>
+                    <p class="text-muted mb-5">
+                        Selecciona una opción para administrar el sistema
+                    </p>
+
+                    <hr class="mb-4" />
+
+                    <!-- Botones del menú -->
+                    <div class="row g-3 mb-4 justify-content-center">
+
+                        <div class="col-12 col-md-3">
+                            <a asp-controller="Administradores" asp-action="Menu"
+                               class="btn btn-lg w-100 rounded-4 btn-inicio">
+                                Inicio
+                            </a>
+                        </div>
+
+
+                        <div class="col-12 col-md-3">
+                            <a asp-controller="Administradores" asp-action="Estudiantes"
+                               class="btn btn-outline-info btn-lg w-100 rounded-4">
+                                Estudiantes
+                            </a>
+                        </div>
+
+                        <div class="col-12 col-md-3">
+                            <a asp-controller="Administradores" asp-action="Contactos"
+                               class="btn btn-lg w-100 rounded-4 btn-contactos">
+                                Contactos
+                            </a>
+                    
+                        </div>
+
+                        <div class="col-12 col-md-3">
+                            <a asp-controller="Administradores" asp-action="Pasantias"
+                               class="btn btn-outline-warning btn-lg w-100 rounded-4">
+                                Pasantía
+                            </a>
+                        </div>
+
+                    </div>
+
+                    <hr class="mb-4" />
+
+                    <!-- Botón Cerrar sesión -->
+                    <div class="d-flex justify-content-center">
+                        <a asp-controller="AdminAuth" asp-action="Logout"
+                           class="btn btn-danger btn-lg px-5 rounded-4">
+                            Cerrar Sesión
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        background-color: #f3f4f6;
+    }
+
+    .card {
+        border-radius: 24px;
+    }
+
+    .btn-outline-info {
+        border-width: 2px;
+    }
+
+    .btn-outline-warning {
+        border-width: 2px;
+    }
+
+    <style >
+    /* Fondo general */
+    body {
+        background-color: #f3f4f6;
+    }
+
+    .card {
+        border-radius: 24px;
+    }
+
+    /* BOTÓN INICIO - Verde */
+    .btn-inicio {
+        border: 2px solid #059669 !important;
+        color: #059669 !important;
+        background-color: transparent !important;
+    }
+
+        .btn-inicio:hover {
+            background-color: #059669 !important;
+            color: white !important;
+        }
+
+        .btn-inicio:focus,
+        .btn-inicio:active {
+            background-color: #047857 !important;
+            color: white !important;
+            border-color: #047857 !important;
+            box-shadow: none !important;
+        }
+
+    /* BOTÓN ESTUDIANTES - Celeste */
+    .btn-estudiantes {
+        border: 2px solid #00B7FF !important;
+        color: #00B7FF !important;
+        background-color: transparent !important;
+    }
+
+        .btn-estudiantes:hover {
+            background-color: #00B7FF !important;
+            color: white !important;
+        }
+
+        .btn-estudiantes:focus,
+        .btn-estudiantes:active {
+            background-color: #0093CC !important;
+            color: white !important;
+            border-color: #0093CC !important;
+            box-shadow: none !important;
+        }
+
+    /* BOTÓN CONTACTOS - Azul #004AAD */
+    .btn-contactos {
+        border: 2px solid #004AAD !important;
+        color: #004AAD !important;
+        background-color: transparent !important;
+    }
+
+        .btn-contactos:hover {
+            background-color: #004AAD !important;
+            color: #ffffff !important;
+        }
+
+        .btn-contactos:focus,
+        .btn-contactos:active {
+            background-color: #00347A !important;
+            color: white !important;
+            border-color: #00347A !important;
+            box-shadow: none !important;
+        }
+
+    /* BOTÓN PASANTÍA - Amarillo */
+    .btn-pasantia {
+        border: 2px solid #FBBF24 !important;
+        color: #FBBF24 !important;
+        background-color: transparent !important;
+    }
+
+        .btn-pasantia:hover {
+            background-color: #FBBF24 !important;
+            color: #111827 !important;
+        }
+
+        .btn-pasantia:focus,
+        .btn-pasantia:active {
+            background-color: #D97706 !important;
+            color: #111827 !important;
+            border-color: #D97706 !important;
+            box-shadow: none !important;
+        }
+</style>

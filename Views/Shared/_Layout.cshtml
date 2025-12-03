@@ -26,7 +26,58 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Sobre">Sobre</a>
                         </li>
+
                     </ul>
+                    <!-- DERECHA -->
+                    <ul class="navbar-nav ms-auto">
+
+                        @if (!string.IsNullOrEmpty(Context.Session.GetString("EstudianteId")) ||
+                                                !string.IsNullOrEmpty(Context.Session.GetString("empresaID")) ||
+                                                !string.IsNullOrEmpty(Context.Session.GetString("AdminId")))
+
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-dark"
+                                   href="#"
+                                   role="button"
+                                   data-bs-toggle="dropdown">
+                                    Mi Cuenta
+                                </a>
+
+                                <ul class="dropdown-menu dropdown-menu-end">
+
+                                    @* Solo para estudiantes *@
+                                    @if (!string.IsNullOrEmpty(Context.Session.GetString("EstudianteId")))
+                                    {
+                                        <li>
+                                            <a class="dropdown-item"
+                                               asp-controller="Estudiantes"
+                                               asp-action="Postular">
+                                                Postulaciones
+                                            </a>
+                                        </li>
+                                        <li><hr class="dropdown-divider" /></li>
+                                    }
+
+                                    @* Cerrar sesión para cualquier usuario con sesión *@
+                                    <li>
+                                        <button class="dropdown-item text-danger"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#logoutModal">
+                                            Cerrar Sesión
+                                        </button>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                        else
+                        {
+
+                        }
+
+
+                    </ul>
+
                 </div>
             </div>
         </nav>
@@ -46,5 +97,33 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+
+
+    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="logoutModalLabel">Confirmación de Cierre de Sesión</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    ¿Estás seguro de que deseas **cerrar la sesión**?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+
+                    @* Este botón SUBMITE el formulario de Logout que definimos previamente.
+                  Usamos un formulario para enviar el POST seguro.
+                *@
+                    <form asp-controller="Empresas" asp-action="logout" method="post">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-danger">
+                            Cerrar Sesión
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
