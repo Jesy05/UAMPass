@@ -226,9 +226,14 @@ namespace UAMPass.Controllers.Admin
             return View(VIEW_PORTAL + "Menu.cshtml", admin);
         }
 
-        public IActionResult Estudiantes()
+        public async Task<IActionResult> Estudiantes()
         {
-            return View(VIEW_PORTAL + "Estudiantes.cshtml");
+            var estudiantes = await _db.Estudiantes
+                .AsNoTracking()
+                .OrderBy(e => e.Nombre)
+                .ToListAsync();
+
+            return View("~/Views/PortalAdmin/Estudiantes.cshtml", estudiantes);
         }
 
         public IActionResult Contactos()
