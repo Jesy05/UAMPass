@@ -151,28 +151,20 @@ namespace UAMPass.Controllers
             return View();
         }
 
-        // POST: Empresas/ForgotPassword
         [HttpPost]
-        public IActionResult ForgotPassword(string correo)
+        public async Task<IActionResult> ForgotPassword(string contactoemail)
         {
-            // tu lógica aquí
-            ViewBag.Mensaje = "Si el correo existe, se enviarán instrucciones.";
+            var admin = await _db.Empresas.FirstOrDefaultAsync(a => a.ContactoEmail == contactoemail);
+
+            if (admin == null)
+            {
+                ViewBag.Mensaje = "No existe una empress con ese usuario.";
+                return View();
+            }
+
+            ViewBag.Mensaje = "Contacta a soporte técnico para restablecer tu contraseña. (Modo Demo)";
             return View();
         }
 
-
-        [HttpGet]
-        [Route("api/empresas")]
-        public async Task<IActionResult> getEmpresas()
-        {
-            var data = await _db.Empresas
-                .Select(s => new ListEmpresa
-                {
-                    Id = s.Id,
-                    Nombre = s.Nombre
-                }).ToListAsync();
-
-            return Ok(data);
-        }
     }
 }
