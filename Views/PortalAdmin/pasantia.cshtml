@@ -4,6 +4,13 @@
 
 @{
     ViewData["Title"] = "Gestión Global de Pasantías";
+
+    // Letras para el filtro por empresa
+    string[] letras = new[]
+    {
+        "A","B","C","D","E","F","G","H","I","J","K","L","M",
+        "N","Ñ","O","P","Q","R","S","T","U","V","W","X","Y","Z"
+    };
 }
 
 <div class="card shadow-sm border-0 rounded-4 p-4">
@@ -12,6 +19,49 @@
             <h2 class="fw-bold text-primary">Listado Global de Pasantías</h2>
             <p class="text-muted">Administra las ofertas de todas las empresas registradas.</p>
         </div>
+    </div>
+
+    <!-- 🔸 Filtros personalizados (Total + buscador + abecedario) -->
+    <div class="mb-3">
+
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
+            <!-- Total pasantías -->
+            <div id="totalPasantiasBadge"
+                 class="badge total-pasantias-badge px-3 py-2 rounded-pill shadow-sm">
+                Total pasantías: 0
+            </div>
+
+            <!-- Buscador personalizado -->
+            <div class="d-flex align-items-center gap-2">
+                <input id="searchPasantias"
+                       type="text"
+                       class="form-control form-control-sm busqueda-pasantias-input"
+                       placeholder="Buscar por empresa o título..." />
+
+                <button id="btnBuscarPasantias"
+                        type="button"
+                        class="btn btn-sm btn-busqueda-pasantias rounded-pill px-3">
+                    Buscar
+                </button>
+            </div>
+        </div>
+
+        <!-- Abecedario por EMPRESA -->
+        <div>
+            <div class="fw-semibold mb-1">Empresa</div>
+            <div class="d-flex flex-wrap align-items-center gap-1" id="alphaFiltroPasantias">
+                <a href="#" data-letter="Todos"
+                   class="letter-link letter-active">Todos</a>
+
+                @foreach (var letra in letras)
+                {
+                    <a href="#"
+                       data-letter="@letra"
+                       class="letter-link">@letra</a>
+                }
+            </div>
+        </div>
+
     </div>
 
     <div class="table-responsive">
@@ -29,6 +79,8 @@
         </table>
     </div>
 </div>
+
+<!-- Modales -->
 
 <div class="modal fade" id="modalEditarPasantia" tabindex="-1">
     <div class="modal-dialog">
@@ -85,6 +137,64 @@
     </div>
 </div>
 
+<style>
+    /* Badge Total pasantías */
+    .total-pasantias-badge {
+        background-color: #fff7e6;
+        color: #efac45;
+        font-weight: 600;
+        border: 1px solid #efac45;
+    }
+
+    /* Buscador personalizado */
+    .busqueda-pasantias-input:focus {
+        border-color: #efac45;
+        box-shadow: 0 0 0 0.15rem rgba(239, 172, 69, 0.35);
+    }
+
+    .btn-busqueda-pasantias {
+        background-color: #efac45;
+        border-color: #efac45;
+        color: #fff;
+        font-weight: 600;
+    }
+
+        .btn-busqueda-pasantias:hover {
+            background-color: #e49b29;
+            border-color: #e49b29;
+            color: #fff;
+        }
+
+    /* Letras del abecedario */
+    .letter-link {
+        font-size: 0.95rem;
+        color: #04098b 
+        font-weight: 500;
+        text-decoration: none;
+        margin-right: 0.35rem;
+    }
+
+        .letter-link:hover {
+            text-decoration: underline;
+            color: #04098b
+        }
+
+    .letter-active {
+        font-weight: 700;
+        text-decoration: underline;
+        color: #04098b
+    }
+
+    /* 🔸 Chips de carreras (columna "Carreras") */
+    .badge.bg-info {
+        background-color: #efac45 !important;
+        color: #ffffff !important;
+        font-weight: 600;
+        padding: 4px 10px;
+        border-radius: 999px;
+    }
+</style>
+
 @section Scripts {
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
@@ -93,7 +203,8 @@
     <script>
         $(document).ready(function () {
 
-            $('#tablaPasantiasAdmin').DataTable({
+            // Inicializamos DataTable y guardamos referencia
+            var tabla = $('#tablaPasantiasAdmin').DataTable({
                 ajax: {
                     url: `/api/admin/pasantias`,
                     dataSrc: ''
@@ -101,22 +212,24 @@
                 language: {
                     url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
                 },
+                // Usamos solo tabla + info + paginación (buscador nativo oculto)
+                dom: 'rt<"bottom"lip>',
                 columns: [
                     { data: 'idPasantia', visible: false },
                     {
                         data: 'nombreEmpresa',
                         defaultContent: 'N/A',
-                        render: function(data) {
+                        render: function (data) {
                             return `<span class="fw-bold text-primary">${data}</span>`;
                         }
                     },
                     { data: 'titulo' },
                     {
                         data: 'carrerasPermitidas',
-                        render: function(data) {
-                            if(!data) return "";
+                        render: function (data) {
+                            if (!data) return "";
                             return data.split(',').map(c =>
-                                `<span class="badge bg-info text-dark me-1">${c.trim()}</span>`
+                                `<span class="badge bg-info me-1">${c.trim()}</span>`
                             ).join('');
                         }
                     },
@@ -125,8 +238,6 @@
                         orderable: false,
                         className: "text-center",
                         render: function (data, type, row) {
-                            // CORRECCIÓN VISUAL: Usamos 'd-flex' y 'gap-2' en lugar de btn-group
-                            // para que los botones tengan espacio y no se deformen.
                             return `
                                 <div class="d-flex justify-content-center gap-2">
                                     <button class="btn btn-sm btn-warning btn-editar text-white"
@@ -148,66 +259,104 @@
                     }
                 ]
             });
-        });
 
-        // VARIABLES GLOBALES
-        var idSeleccionado = null;
+            // Actualizamos el contador total cuando llega el ajax
+            tabla.on('xhr', function () {
+                var total = tabla.rows().count();
+                $('#totalPasantiasBadge').text('Total pasantías: ' + total);
+            });
 
-        // --- LÓGICA DE ELIMINAR ---
-        $(document).on('click', '.btn-eliminar', function () {
-            idSeleccionado = $(this).data('id');
-            $('#modalConfirmarEliminar').modal('show');
-        });
+            // --- BÚSQUEDA PERSONALIZADA (empresa + título) ---
+            $('#btnBuscarPasantias').on('click', function () {
+                var texto = $('#searchPasantias').val();
+                tabla.search(texto).draw();
+                // limpiamos selección de letra porque ahora manda el texto
+                $('#alphaFiltroPasantias a').removeClass('letter-active');
+            });
 
-        $('#btnConfirmarEliminar').on('click', function () {
-            $.ajax({
-                // CORRECCIÓN: Apuntamos a la nueva ruta /api/admin/pasantias/ID
-                url: `/api/admin/pasantias/${idSeleccionado}`,
-                type: 'DELETE',
-                success: function (response) {
-                    $('#modalConfirmarEliminar').modal('hide');
-                    $('#tablaPasantiasAdmin').DataTable().ajax.reload();
-                    // Opcional: Un Toast o alerta más discreta
-                },
-                error: function (xhr) {
-                    alert("Error al eliminar: " + xhr.responseText);
+            $('#searchPasantias').on('keyup', function (e) {
+                if (e.key === 'Enter') {
+                    $('#btnBuscarPasantias').click();
                 }
             });
-        });
 
-        // --- LÓGICA DE EDITAR ---
-        $(document).on('click', '.btn-editar', function () {
-            $('#editarId').val($(this).data('id'));
-            $('#editarTitulo').val($(this).data('titulo'));
-            $('#editarDescripcion').val($(this).data('descripcion'));
-            $('#editarCarreras').val($(this).data('carreras'));
+            // --- FILTRO POR ABECEDARIO (columna Empresa = índice 1) ---
+            $('#alphaFiltroPasantias').on('click', 'a', function (e) {
+                e.preventDefault();
 
-            $('#modalEditarPasantia').modal('show');
-        });
+                $('#alphaFiltroPasantias a').removeClass('letter-active');
+                $(this).addClass('letter-active');
 
-        $('#btnGuardarCambios').on('click', function () {
-            const id = $('#editarId').val();
+                var letra = $(this).data('letter');
 
-            const dataToSend = {
-                titulo: $('#editarTitulo').val(),
-                descripcion: $('#editarDescripcion').val(),
-                RequiredCareersCsv: $('#editarCarreras').val()
-            };
+                // limpiar caja de texto
+                $('#searchPasantias').val('');
+                tabla.search(''); // limpiamos búsqueda global
 
-            $.ajax({
-                // CORRECCIÓN: Apuntamos a la nueva ruta de Admin para editar
-                url: `/api/admin/pasantias/${id}`,
-                type: 'PUT',
-                contentType: 'application/json',
-                data: JSON.stringify(dataToSend),
-                success: function (response) {
-                    $('#modalEditarPasantia').modal('hide');
-                    $('#tablaPasantiasAdmin').DataTable().ajax.reload();
-                    alert("Pasantía actualizada correctamente.");
-                },
-                error: function (xhr) {
-                    alert("Error al actualizar: " + xhr.status);
+                if (letra === 'Todos') {
+                    tabla.column(1).search('').draw();
+                } else {
+                    var regex = '^' + letra;
+                    tabla.column(1).search(regex, true, false).draw();
                 }
+            });
+
+            // VARIABLES GLOBALES
+            var idSeleccionado = null;
+
+            // --- LÓGICA DE ELIMINAR ---
+            $(document).on('click', '.btn-eliminar', function () {
+                idSeleccionado = $(this).data('id');
+                $('#modalConfirmarEliminar').modal('show');
+            });
+
+            $('#btnConfirmarEliminar').on('click', function () {
+                $.ajax({
+                    url: `/api/admin/pasantias/${idSeleccionado}`,
+                    type: 'DELETE',
+                    success: function (response) {
+                        $('#modalConfirmarEliminar').modal('hide');
+                        tabla.ajax.reload();
+                    },
+                    error: function (xhr) {
+                        alert("Error al eliminar: " + xhr.responseText);
+                    }
+                });
+            });
+
+            // --- LÓGICA DE EDITAR ---
+            $(document).on('click', '.btn-editar', function () {
+                $('#editarId').val($(this).data('id'));
+                $('#editarTitulo').val($(this).data('titulo'));
+                $('#editarDescripcion').val($(this).data('descripcion'));
+                $('#editarCarreras').val($(this).data('carreras'));
+
+                $('#modalEditarPasantia').modal('show');
+            });
+
+            $('#btnGuardarCambios').on('click', function () {
+                const id = $('#editarId').val();
+
+                const dataToSend = {
+                    titulo: $('#editarTitulo').val(),
+                    descripcion: $('#editarDescripcion').val(),
+                    RequiredCareersCsv: $('#editarCarreras').val()
+                };
+
+                $.ajax({
+                    url: `/api/admin/pasantias/${id}`,
+                    type: 'PUT',
+                    contentType: 'application/json',
+                    data: JSON.stringify(dataToSend),
+                    success: function () {
+                        $('#modalEditarPasantia').modal('hide');
+                        tabla.ajax.reload();
+                        alert("Pasantía actualizada correctamente.");
+                    },
+                    error: function (xhr) {
+                        alert("Error al actualizar: " + xhr.status);
+                    }
+                });
             });
         });
     </script>

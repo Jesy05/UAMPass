@@ -226,10 +226,40 @@ namespace UAMPass.Controllers.Admin
             return View(VIEW_PORTAL + "Menu.cshtml", admin);
         }
 
-        public IActionResult Estudiantes()
+        // using Microsoft.EntityFrameworkCore; ya lo tienes arriba
+
+        public async Task<IActionResult> Estudiantes(string? search, string? letra)
         {
-            return View(VIEW_PORTAL + "Estudiantes.cshtml");
+            var query = _db.Estudiantes.AsNoTracking();
+
+            // Filtro por texto (nombre o correo)
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                search = search.Trim();
+                query = query.Where(e =>
+                    e.Nombre.Contains(search) ||
+                    e.Correo.Contains(search));
+            }
+
+            // Filtro por letra inicial del nombre
+            if (!string.IsNullOrWhiteSpace(letra) && letra != "Todos")
+            {
+                letra = letra.ToUpper();
+                query = query.Where(e =>
+                    !string.IsNullOrEmpty(e.Nombre) &&
+                    e.Nombre.ToUpper().StartsWith(letra));
+            }
+
+            var estudiantes = await query
+                .OrderBy(e => e.Nombre)
+                .ToListAsync();
+
+            ViewBag.Search = search;
+            ViewBag.Letra = string.IsNullOrWhiteSpace(letra) ? "Todos" : letra;
+
+            return View("~/Views/PortalAdmin/Estudiantes.cshtml", estudiantes);
         }
+
 
         public IActionResult Contactos()
         {

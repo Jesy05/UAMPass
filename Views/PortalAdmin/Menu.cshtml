@@ -1,25 +1,30 @@
 ﻿@model UAMPass.Models.Administrador
-
 @{
-    ViewData["Title"] = "Menú Administrador";
+    ViewData["Title"] = "Menú del Administrador";
 }
 
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-lg-10">
             <div class="card shadow-lg border-0 rounded-4">
-                <div class="card-body text-center py-5">
 
-                    <h1 class="fw-bold mb-2">
+                <div class="card-body py-5">
+
+                    <!-- Título -->
+                    <h1 class="text-center fw-bold mb-2">
                         Bienvenido, @Model.Usuario 👋
                     </h1>
-                    <p class="text-muted mb-5">
+
+                    <p class="text-center text-muted mb-4">
                         Selecciona una opción para administrar el sistema
                     </p>
 
-                    <hr class="mb-4" />
+                    <hr class="my-4" />
+
+                    <!-- Botones de menú -->
                     <div class="row g-3 mb-4 justify-content-center">
 
+                        <!-- Inicio -->
                         <div class="col-12 col-md-3">
                             <a asp-controller="Administradores" asp-action="Menu"
                                class="btn btn-lg w-100 rounded-4 btn-inicio">
@@ -27,13 +32,15 @@
                             </a>
                         </div>
 
+                        <!-- Estudiantes -->
                         <div class="col-12 col-md-3">
-                            <a asp-controller="Estudiantes" asp-action="Index"
-                               class="btn btn-outline-info btn-lg w-100 rounded-4 custom-outline">
+                            <a asp-controller="Administradores" asp-action="Estudiantes"
+                               class="btn btn-lg w-100 rounded-4 btn-estudiantes">
                                 Estudiantes
                             </a>
                         </div>
 
+                        <!-- Contactos -->
                         <div class="col-12 col-md-3">
                             <a asp-controller="Administradores" asp-action="Contactos"
                                class="btn btn-lg w-100 rounded-4 btn-contactos">
@@ -41,25 +48,22 @@
                             </a>
                         </div>
 
+                        <!-- Pasantía -->
                         <div class="col-12 col-md-3">
                             <a asp-controller="Administradores" asp-action="Pasantias"
-                               class="btn btn-outline-warning btn-lg w-100 rounded-4 custom-outline">
+                               class="btn btn-lg w-100 rounded-4 btn-pasantia">
                                 Pasantía
                             </a>
                         </div>
 
                     </div>
 
-                    <hr class="mb-4" />
+                    <hr class="my-4" />
 
-                    <div class="d-flex justify-content-center">
-                        <a asp-controller="AdminAuth" asp-action="Logout"
-                           class="btn btn-danger btn-lg px-5 rounded-4">
-                            Cerrar Sesión
-                        </a>
-                    </div>
+                    
 
                 </div>
+
             </div>
         </div>
     </div>
@@ -74,36 +78,51 @@
         border-radius: 24px;
     }
 
-    /* Asegura que los botones por defecto de Bootstrap (Info y Warning) tengan borde de 2px */
-    .custom-outline {
-        border-width: 2px !important;
-    }
-
-    /* --- ESTILOS PERSONALIZADOS --- */
-
-    /* BOTÓN CONTACTOS - Azul (#004AAD) */
-    .btn-contactos {
-        border: 2px solid #004AAD !important;
-        color: #004AAD !important;
-        background-color: transparent !important;
-        transition: all 0.3s ease;
-    }
-
-        .btn-contactos:hover {
-            background-color: #004AAD !important;
-            color: #ffffff !important;
-        }
-
-    /* BOTÓN INICIO - Verde (#059669) */
+    /* Inicio - verde */
     .btn-inicio {
-        border: 2px solid #059669 !important;
-        color: #059669 !important;
-        background-color: transparent !important;
-        transition: all 0.3s ease;
+        border: 2px solid #059669;
+        color: #059669;
+        background-color: transparent;
     }
 
         .btn-inicio:hover {
-            background-color: #059669 !important;
-            color: white !important;
+            background-color: #059669;
+            color: #ffffff;
+        }
+
+    /* Estudiantes - celeste */
+    .btn-estudiantes {
+        border: 2px solid #00B7FF;
+        color: #00B7FF;
+        background-color: transparent;
+    }
+
+        .btn-estudiantes:hover {
+            background-color: #00B7FF;
+            color: #ffffff;
+        }
+
+    /* Contactos - azul #004AAD */
+    .btn-contactos {
+        border: 2px solid #004AAD;
+        color: #004AAD;
+        background-color: transparent;
+    }
+
+        .btn-contactos:hover {
+            background-color: #004AAD;
+            color: #ffffff;
+        }
+
+    /* Pasantía - amarillo */
+    .btn-pasantia {
+        border: 2px solid #FBBF24;
+        color: #FBBF24;
+        background-color: transparent;
+    }
+
+        .btn-pasantia:hover {
+            background-color: #FBBF24;
+            color: #111827;
         }
 </style>
