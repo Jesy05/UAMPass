@@ -32,7 +32,9 @@
                     <ul class="navbar-nav ms-auto">
 
                         @if (!string.IsNullOrEmpty(Context.Session.GetString("EstudianteId")) ||
-                                                !string.IsNullOrEmpty(Context.Session.GetString("empresaID")))
+                                                !string.IsNullOrEmpty(Context.Session.GetString("empresaID")) ||
+                                                !string.IsNullOrEmpty(Context.Session.GetString("AdminId")))
+
                         {
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle text-dark"
