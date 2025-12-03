@@ -3,12 +3,20 @@
 @{
     ViewData["Title"] = "Estudiantes";
     var total = Model?.Count() ?? 0;
+
+    string search = ViewBag.Search as string ?? "";
+    string letraSel = ViewBag.Letra as string ?? "Todos";
+
+    string[] letras = new[]
+    {
+        "A","B","C","D","E","F","G","H","I","J","K","L","M",
+        "N","Ñ","O","P","Q","R","S","T","U","V","W","X","Y","Z"
+    };
 }
 
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-12 tabla-estudiantes-container">
-
 
             <div class="card shadow-sm border-0 rounded-4">
 
@@ -16,7 +24,7 @@
                 <div class="card-header text-white border-0 rounded-top-4" style="background-color:#00A8A8;">
                     <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
                         <h3 class="mb-0 fw-semibold">
-                            Estudiantes registrados <span class="fw-bold">(@total)</span>
+                            Estudiantes registrados
                         </h3>
 
                         <a asp-action="Create" asp-controller="Estudiantes"
@@ -26,18 +34,79 @@
                     </div>
                 </div>
 
-                <!-- Tabla -->
+                <!-- Filtros + Tabla -->
                 <div class="card-body p-0">
+
+                    <!-- Filtros superiores -->
+                    <div class="filters-wrapper px-4 pt-4 pb-3">
+
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
+
+                            <!-- Total estudiantil -->
+                            <div class="badge total-badge px-3 py-2 rounded-pill shadow-sm">
+                                Total estudiantil: @total
+                            </div>
+
+                            <!-- Buscador -->
+                            <form asp-action="Estudiantes"
+                                  asp-controller="Administradores"
+                                  method="get"
+                                  class="d-flex align-items-center gap-2">
+                                <input type="hidden" name="letra" value="@letraSel" />
+
+                                <input type="text"
+                                       name="search"
+                                       value="@search"
+                                       class="form-control form-control-sm"
+                                       placeholder="Buscar por nombre o correo..." />
+
+                                <button type="submit"
+                                        class="btn btn-sm btn-outline-secondary rounded-pill px-3">
+                                    Buscar
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- Barra alfabética simple -->
+                        <div class="mb-2">
+                            <div class="fw-semibold mb-1">Nombre</div>
+
+                            <div class="d-flex flex-wrap align-items-center gap-1">
+                                <!-- Todos -->
+                                <a asp-action="Estudiantes"
+                                   asp-controller="Administradores"
+                                   asp-route-letra="Todos"
+                                   asp-route-search="@search"
+                                   class="letter-link @(letraSel == "Todos" ? "letter-active" : "")">
+                                    Todos
+                                </a>
+
+                                @foreach (var letra in letras)
+                                {
+                                    <a asp-action="Estudiantes"
+                                       asp-controller="Administradores"
+                                       asp-route-letra="@letra"
+                                       asp-route-search="@search"
+                                       class="letter-link @(letraSel == letra ? "letter-active" : "")">
+                                        @letra
+                                    </a>
+                                }
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Tabla -->
                     <div class="table-responsive">
                         <table class="table table-hover align-middle table-estudiantes mb-0">
-                            <thead class="table-light">
-                                <tr class="small text-uppercase text-muted">
-                                    <th style="width:18%">Nombre</th>
-                                    <th style="width:20%">Correo</th>
-                                    <th style="width:15%">Facultad</th>
-                                    <th style="width:10%">CIF</th>
-                                    <th style="width:22%">Carreras</th>
-                                    <th class="text-center" style="width:15%">Acciones</th>
+                            <thead>
+                                <tr>
+                                    <th>NOMBRE</th>
+                                    <th>CORREO</th>
+                                    <th>FACULTAD</th>
+                                    <th>CIF</th>
+                                    <th>CARRERAS</th>
+                                    <th class="text-center">ACCIONES</th>
                                 </tr>
                             </thead>
 
@@ -71,17 +140,23 @@
 
                                             <td class="text-center">
                                                 <div class="action-buttons">
-                                                    <a asp-action="Details" asp-controller="Estudiantes" asp-route-id="@item.Id"
+                                                    <a asp-action="Details"
+                                                       asp-controller="Estudiantes"
+                                                       asp-route-id="@item.Id"
                                                        class="btn btn-sm btn-outline-primary rounded-pill px-3">
                                                         Ver
                                                     </a>
 
-                                                    <a asp-action="Edit" asp-controller="Estudiantes" asp-route-id="@item.Id"
+                                                    <a asp-action="Edit"
+                                                       asp-controller="Estudiantes"
+                                                       asp-route-id="@item.Id"
                                                        class="btn btn-sm btn-outline-secondary rounded-pill px-3">
                                                         Editar
                                                     </a>
 
-                                                    <a asp-action="Delete" asp-controller="Estudiantes" asp-route-id="@item.Id"
+                                                    <a asp-action="Delete"
+                                                       asp-controller="Estudiantes"
+                                                       asp-route-id="@item.Id"
                                                        class="btn btn-sm btn-outline-danger rounded-pill px-3">
                                                         Eliminar
                                                     </a>
@@ -91,12 +166,12 @@
                                     }
                                 }
                             </tbody>
-
                         </table>
                     </div>
-                </div>
 
-            </div>
+                </div> <!-- card-body -->
+
+            </div> <!-- card -->
 
         </div>
     </div>
@@ -118,6 +193,38 @@
     .card-header {
         padding-top: 1.1rem;
         padding-bottom: 1.1rem;
+    }
+
+    .filters-wrapper {
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    /* Badge Total Estudiantil */
+    .total-badge {
+        background-color: #e6f6f7;
+        color: #027d81;
+        font-weight: 600;
+        border: 1px solid #027d81;
+    }
+
+    /* Letras del abecedario */
+    .letter-link {
+        font-size: 0.95rem;
+        color: #027d81;
+        font-weight: 500;
+        text-decoration: none;
+        margin-right: 0.35rem;
+    }
+
+        .letter-link:hover {
+            text-decoration: underline;
+            color: #015c5f;
+        }
+
+    .letter-active {
+        font-weight: 700;
+        text-decoration: underline;
+        color: #027d81;
     }
 
     .table-estudiantes th,
@@ -142,7 +249,6 @@
         background-color: #f8fbfd;
     }
 
-    /* Chips de carreras: mismo celeste que ya usabas */
     .career-pill {
         background-color: #00B7FF;
         color: white;
@@ -153,30 +259,17 @@
         white-space: nowrap;
     }
 
-    /* Botones en una línea horizontal */
     .action-buttons {
         display: flex;
         justify-content: center;
         align-items: center;
-        gap: 12px;
+        gap: 8px;
         white-space: nowrap;
         flex-wrap: nowrap;
     }
 
-    .pagination .page-link {
-        border-radius: 999px;
-        padding: 0.25rem 0.75rem;
-        font-size: 0.85rem;
-    }
-
-    .action-buttons .btn-sm {
-        font-size: 0.78rem; /* un poco más pequeño */
-        padding: 0.20rem 0.7rem; /* menos ancho */
-    }
-
-    /* Si quieres, reduce un pelín el gap también */
-    .action-buttons {
-        gap: 8px;
-    }
-
+        .action-buttons .btn-sm {
+            font-size: 0.78rem;
+            padding: 0.20rem 0.7rem;
+        }
 </style>
