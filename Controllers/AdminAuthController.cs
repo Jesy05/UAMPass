@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Http; // Necesario para Session
 
 namespace UAMPass.Controllers
 {
-    public class AdminAuthController : Controller
+    public class AdminAuthController : Controller 
     {
         private readonly ApplicationDbContext _context;
 
@@ -20,7 +20,7 @@ namespace UAMPass.Controllers
         }
 
         // GET: /AdminAuth/Landing
-        public IActionResult Landing()
+        public IActionResult Landing() 
         {
             return View();
         }
