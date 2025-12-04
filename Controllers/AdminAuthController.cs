@@ -32,7 +32,7 @@ namespace UAMPass.Controllers
             return View(new LoginAdministradorDTO());
         }
 
-        // POST: /AdminAuth/Login
+        // POST: /AdminAuth/Login 
         [HttpPost]
         public async Task<IActionResult> Login(LoginAdministradorDTO model)
         {

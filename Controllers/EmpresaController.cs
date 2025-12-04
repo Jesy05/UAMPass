@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace UAMPass.Controllers
 {
-    // CORREGIDO: "EmpresasController" (Plural) para coincidir con asp-controller="Empresas"
+    //  "EmpresasController" (Plural) para coincidir con asp-controller="Empresas"
     public class EmpresasController : Controller
     {
         private readonly ApplicationDbContext _db;
