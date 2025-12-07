@@ -143,7 +143,8 @@
             });
 
             // Cargar empresas
-            $.getJSON('/api/empresas', function (data) {
+            $.getJSON('/api/Empresas', function (data) {
+                console.log(data);
                 $.each(data, function (i, item) {
                     $('#empresaSelect').append($('<option>', {
                         value: item.id,

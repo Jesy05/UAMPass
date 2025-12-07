@@ -56,7 +56,6 @@ namespace UAMPass.Controllers
 
                 aplicacion.EstudianteId = obj.EstudianteId;
                 aplicacion.PasantiaId = obj.PasantiaId;
-                aplicacion.Comentarios = obj.Comentarios;
                 aplicacion.Status = ApplicationStatus.InReview;
 
                 await _context.Aplicaciones.AddAsync(aplicacion);

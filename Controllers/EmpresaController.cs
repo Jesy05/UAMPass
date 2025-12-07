@@ -152,9 +152,9 @@ namespace UAMPass.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ForgotPassword(string contactoemail)
+        public async Task<IActionResult> ForgotPassword(string correo)
         {
-            var admin = await _db.Empresas.FirstOrDefaultAsync(a => a.ContactoEmail == contactoemail);
+            var admin = await _db.Empresas.FirstOrDefaultAsync(a => a.ContactoEmail == correo);
 
             if (admin == null)
             {
@@ -165,6 +165,20 @@ namespace UAMPass.Controllers
             ViewBag.Mensaje = "Contacta a soporte técnico para restablecer tu contraseña. (Modo Demo)";
             return View();
         }
+
+        [HttpGet]
+        [Route("api/empresas")]
+        public async Task<IActionResult> GetEmpresas()
+        {
+            var empresas = await _db.Empresas
+                .Select(e => new { id = e.Id, nombre = e.Nombre })
+                .ToListAsync();
+
+            return Json(empresas); 
+        }
+
+
+
 
     }
 }
