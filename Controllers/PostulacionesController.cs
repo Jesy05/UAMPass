@@ -55,7 +55,7 @@ namespace UAMPass.Controllers
                     throw new Exception("Debe seleccionar una propuesta de pasantía.");
 
                 aplicacion.EstudianteId = obj.EstudianteId;
-                aplicacion.PasantiaId = obj.PasantiaId;
+                aplicacion.PasantiaId = obj.PasantiaId;                
                 aplicacion.Status = ApplicationStatus.InReview;
 
                 await _context.Aplicaciones.AddAsync(aplicacion);
@@ -115,6 +115,7 @@ namespace UAMPass.Controllers
                 return BadRequest(new { success = false, mensaje = "Estado inválido." });
 
             aplicacion.Status = nuevoEstado;
+            aplicacion.Comentarios = obj.Comentarios;
             await _context.SaveChangesAsync();
 
             return Ok(new { success = true, nuevoEstado = aplicacion.Status });

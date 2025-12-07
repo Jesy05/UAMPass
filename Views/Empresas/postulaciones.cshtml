@@ -23,6 +23,35 @@
     <tbody></tbody>
 </table>
 
+<!-- MODAL APLICAR -->
+<div class="modal fade" id="aplicarModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmar Aplicación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <label class="form-label">Comentario (opcional)</label>
+                <textarea id="comentarioAplicacion" class="form-control" rows="3"></textarea>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    Cancelar
+                </button>
+
+                <button type="button" id="btnEnviarAplicacion" class="btn btn-primary">
+                    Aplicar
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 
 @section Scripts {
     <!-- DataTables JS -->
@@ -75,12 +104,28 @@
             var id = $(this).data('id');
             var estado = "Interview";
 
+            // Guardar datos en el botón de enviar
+            $('#btnEnviarAplicacion').data('id', id);
+            $('#btnEnviarAplicacion').data('estado', estado);
+
+            // Abrir el modal
+            $('#aplicarModal').modal('show');
+        });
+
+        // Cuando se confirma en el modal
+        $('#btnEnviarAplicacion').on('click', function () {
+            var id = $(this).data('id');
+            var estado = $(this).data('estado');
+            var comentario = $('#comentarioAplicacion').val();
+
             $.ajax({
                 url: '/Postulaciones/CambiarEstado',
                 type: 'PUT',
                 contentType: 'application/json',
-                data: JSON.stringify({ id: id, estado: estado }),
+                data: JSON.stringify({ id: id, estado: estado, comentarios: comentario }),
                 success: function (response) {
+                    $('#aplicarModal').modal('hide');
+                    $('#comentarioAplicacion').val('');
                     if (response.success) {
                         alert("Estado cambiado a: " + response.nuevoEstado);
                         $('#postulacionesTable').DataTable().ajax.reload();
@@ -95,61 +140,43 @@
         $(document).on('click', '.btn-aceptar', function () {
             var id = $(this).data('id');
             var estado = "Accepted";
+            var comentario = $('#comentarioAplicacion').val();
 
-            $.ajax({
-                url: '/Postulaciones/CambiarEstado',
-                type: 'PUT',
-                contentType: 'application/json',
-                data: JSON.stringify({ id: id, estado: estado }),
-                success: function (response) {
-                    if (response.success) {
-                        alert("Estado cambiado a: " + response.nuevoEstado);
-                        $('#postulacionesTable').DataTable().ajax.reload();
-                    } else {
-                        alert("Error: " + response.mensaje);
-                    }
-                }
-            });
+             // Guardar datos en el botón de enviar
+            $('#btnEnviarAplicacion').data('id', id);
+            $('#btnEnviarAplicacion').data('estado', estado);
+
+            // Abrir el modal
+            $('#aplicarModal').modal('show');
+           
         });
 
         $(document).on('click', '.btn-rechazar', function () {
             var id = $(this).data('id');
             var estado = "Rejected";
+            var comentario = $('#comentarioAplicacion').val();
 
-            $.ajax({
-                url: '/Postulaciones/CambiarEstado',
-                type: 'PUT',
-                contentType: 'application/json',
-                data: JSON.stringify({ id: id, estado: estado }),
-                success: function (response) {
-                    if (response.success) {
-                        alert("Estado cambiado a: " + response.nuevoEstado);
-                        $('#postulacionesTable').DataTable().ajax.reload();
-                    } else {
-                        alert("Error: " + response.mensaje);
-                    }
-                }
-            });
+
+             // Guardar datos en el botón de enviar
+            $('#btnEnviarAplicacion').data('id', id);
+            $('#btnEnviarAplicacion').data('estado', estado);
+
+            // Abrir el modal
+            $('#aplicarModal').modal('show');
         });
 
         $(document).on('click', '.btn-completa', function () {
             var id = $(this).data('id');
             var estado = "Completed";
+            var comentario = $('#comentarioAplicacion').val();
 
-            $.ajax({
-                url: '/Postulaciones/CambiarEstado',
-                type: 'PUT',
-                contentType: 'application/json',
-                data: JSON.stringify({ id: id, estado: estado }),
-                success: function (response) {
-                    if (response.success) {
-                        alert("Estado cambiado a: " + response.nuevoEstado);
-                        $('#postulacionesTable').DataTable().ajax.reload();
-                    } else {
-                        alert("Error: " + response.mensaje);
-                    }
-                }
-            });
+
+             // Guardar datos en el botón de enviar
+            $('#btnEnviarAplicacion').data('id', id);
+            $('#btnEnviarAplicacion').data('estado', estado);
+
+            // Abrir el modal
+            $('#aplicarModal').modal('show');
         });
     </script>
 }

@@ -29,6 +29,7 @@ namespace UAMPass.Models.Dto
         {
             public int Id { get; set; }
             public string Estado { get; set; } = string.Empty;
+            public string? Comentarios { get; set; }
         }
 
     }

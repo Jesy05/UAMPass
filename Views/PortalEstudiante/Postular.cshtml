@@ -41,8 +41,8 @@
         <tbody>
         </tbody>
     </table>
-    <!-- MODAL APLICAR -->
-    <div class="modal fade" id="aplicarModal" tabindex="-1" aria-hidden="true">
+    <!-- MODAL CONFIRMACIÓN -->
+    <div class="modal fade" id="confirmarModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
 
@@ -51,24 +51,24 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
 
-                <div class="modal-body">
-                    <label class="form-label">Comentario (opcional)</label>
-                    <textarea id="comentarioAplicacion" class="form-control" rows="3"></textarea>
+                <div class="modal-body text-center">
+                    <p>¿Deseas aplicar a esta pasantía?</p>
                 </div>
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                         Cancelar
                     </button>
-
-                    <button type="button" id="btnEnviarAplicacion" class="btn btn-primary">
-                        Aplicar
+                    <button type="button" id="btnConfirmarAplicacion" class="btn btn-primary">
+                        Enviar
                     </button>
                 </div>
 
             </div>
         </div>
     </div>
+
+
 
 </div>
 
@@ -93,13 +93,12 @@
                         alert("Selecciona una pasantía antes de aplicar.");
                         return;
                 }
-
-                $('#aplicarModal').modal('show');
+            $('#confirmarModal').modal('show');
             });
                 // ENVIAR POST AL ACEPTAR EN MODAL
-            $('#btnEnviarAplicacion').on('click', function () {
+            $('#btnConfirmarAplicacion').on('click', function () {
                 var pasantiaId = $('#pasantiaSelect').val();
-                var comentario = $('#comentarioAplicacion').val();
+                
 
                 $.ajax({
                     url: '/api/postulaciones',
@@ -108,7 +107,9 @@
                     data: JSON.stringify({
                         EstudianteId: idEstudiante,
                         PasantiaId: parseInt(pasantiaId),
-                        Comentarios: comentario
+
+
+                        
                     }),
                     success: function () {
                         $('#aplicarModal').modal('hide');
