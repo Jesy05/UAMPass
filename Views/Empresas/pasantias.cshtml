@@ -44,13 +44,43 @@
                     </div>
                     <div class="mb-3">
                         <label for="Carreras" class="form-label">Carreras Permitidas</label>
-                        <select class="form-select" id="Carreras" name="Carreras" multiple required>
-                            <option value="Ingeniería">Ingeniería</option>
-                            <option value="Medicina">Medicina</option>
-                            <option value="Derecho">Derecho</option>
-                            <option value="Sistemas">Sistemas</option>
-                            <option value="Arquitectura">Arquitectura</option>
-                            <option value="Industrial">Industrial</option>
+                        <select class="form-select" id="Carreras" name="Carreras" multiple required size="15">
+
+                            <optgroup label="Facultad de Odontología">
+                                <option value="Odontologia">Odontología</option>
+                            </optgroup>
+
+                            <optgroup label="Facultad de Ciencias Médicas">
+                                <option value="Medicina">Medicina</option>
+                                <option value="Psicologia">Psicología</option>
+                                <option value="Nutricion">Nutrición</option>
+                            </optgroup>
+
+                            <optgroup label="Facultad de Marketing, Diseño y Comunicación">
+                                <option value="Marketing">Marketing y Publicidad</option>
+                                <option value="Diseno">Diseño y Comunicación Visual</option>
+                                <option value="Comunicacion">Comunicación y Relaciones Públicas</option>
+                            </optgroup>
+
+                            <optgroup label="Facultad de Ciencias Administrativas y Económicas">
+                                <option value="AdminEmpresas">Administración de Empresas</option>
+                                <option value="Contabilidad">Contabilidad y Finanzas</option>
+                                <option value="Economia">Economía Empresarial</option>
+                                <option value="NegociosInt">Negocios Internacionales</option>
+                            </optgroup>
+
+                            <optgroup label="Facultad de Ingeniería y Arquitectura">
+                                <option value="Arquitectura">Arquitectura</option>
+                                <option value="IngCivil">Ingeniería Civil</option>
+                                <option value="IngIndustrial">Ingeniería Industrial</option>
+                                <option value="IngSistemas">Ingeniería en Sistemas de Información</option>
+                            </optgroup>
+
+                            <optgroup label="Facultad de Ciencias Jurídicas, Humanidades y RR.II.">
+                                <option value="Derecho">Derecho</option>
+                                <option value="Diplomacia">Diplomacia y Relaciones Internacionales</option>
+                            </optgroup>
+
                         </select>
                         <small class="text-muted">Mantén presionado Ctrl para seleccionar varias.</small>
                     </div>
